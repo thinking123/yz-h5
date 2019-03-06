@@ -9,5 +9,11 @@ export default {
         }
 
         state.loading =  loadQueue.length > 0
+    },
+    setShowIndexLoadingBar(state , show){
+        state.showIndexLoadingBar = show
+    },
+    setLoadingProgress(state , loadingProgress){
+        state.loadingProgress = loadingProgress
     }
 }

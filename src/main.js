@@ -1,5 +1,6 @@
 import "@babel/polyfill"
 import './compatibility/flexible'
+import jQuery from 'jquery'
 import './debug'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
@@ -10,6 +11,8 @@ import store from './store'
 import './assets/css/index.css'
 import 'weui'
 
+window.jQuery = jQuery
+window.$ = jQuery
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 

@@ -1,4 +1,4 @@
-export const sites =  [
+export const sites = [
     {value: '海陵区', key: '0'},
     {value: '高港区', key: '1'},
     {value: '医药高新区', key: '2'},
@@ -10,13 +10,14 @@ export const sites =  [
 ]
 
 export const titles = [
-    {title:'' , tip:''}
+    {title: '', tip: ''}
 ]
+
 export function getSiteByKey(key) {
-    if(key && key >= 0 && key <= 7){
-        const site = sites.find(f=>f.key == key)
+    if (key && key >= 0 && key <= 7) {
+        const site = sites.find(f => f.key == key)
         return site.value
-    }else{
+    } else {
         return null
     }
 
@@ -31,8 +32,9 @@ export function getOS() {
     const u = navigator.userAgent, app = navigator.appVersion;
     const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1;
     const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
-    return [isAndroid , isiOS]
+    return [isAndroid, isiOS]
 }
+
 export function isIphone() {
     const u = navigator.userAgent
     return !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
@@ -44,33 +46,27 @@ export function isIphone6() {
     const isiOS = isIphone();
     if (isiOS && iWidth === 375 && iHeight === 667) {
         return true;
-    }else{
+    } else {
         return false;
     }
 }
+
 export function iPhoneVersion() {
     var iHeight = window.screen.height;
     var iWidth = window.screen.width;
     if (iWidth === 320 && iHeight === 480) {
         return "4";
-    }
-    else if (iWidth === 375 && iHeight === 667) {
+    } else if (iWidth === 375 && iHeight === 667) {
         return "6";
-    }
-    else if (iWidth === 414 && iHeight === 736) {
+    } else if (iWidth === 414 && iHeight === 736) {
         return "6p";
-    }
-    else if(screen.height == 667 && screen.width == 375){
+    } else if (screen.height == 667 && screen.width == 375) {
         return "7";
-    }
-    else if (iWidth === 320 && iHeight === 568) {
+    } else if (iWidth === 320 && iHeight === 568) {
         return "5";
-    }
-    else if (iHeight == 812 && iWidth == 375) {
+    } else if (iHeight == 812 && iWidth == 375) {
         return "x";
-    }
-
-    else if (iHeight <= 480) {
+    } else if (iHeight <= 480) {
         return "2-3";
     }
     return 'none';
@@ -82,7 +78,7 @@ export function elementInViewport(el) {
     var width = el.offsetWidth;
     var height = el.offsetHeight;
 
-    while(el.offsetParent) {
+    while (el.offsetParent) {
         el = el.offsetParent;
         top += el.offsetTop;
         left += el.offsetLeft;
@@ -95,6 +91,7 @@ export function elementInViewport(el) {
         (left + width) <= (window.pageXOffset + window.innerWidth)
     );
 }
+
 export function getViewport() {
 
     var viewPortWidth;
@@ -129,4 +126,41 @@ export function getFontsize(el) {
 //     el.style.fontSize = (fontSize + 1) + 'px';
     console.log(fontSize)
     return fontSize
+}
+
+
+export function downLoadImg(url) {
+    return new Promise((resolve, reject) => {
+        loadImage(
+            url,
+            function (img) {
+                if (img.type === "error") {
+                    console.log("Error loading image " + url);
+                    reject("Error loading image " + url)
+                } else {
+                    resolve({
+                        key:url,
+                        img
+                    })
+                }
+            }
+        );
+    })
+}
+
+
+export async function downLoadAllImg(urls, cb) {
+    let progress = 0
+    const proms = urls.map(url => downLoadImg(url))
+    const imgs = Promise.all(proms)
+    proms.forEach(p => p.then(() => {
+        progress++
+        console.log('current progress', progress)
+        if (typeof cb === 'function') {
+            cb(progress)
+        }
+    }));
+
+    return imgs
+
 }
