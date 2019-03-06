@@ -53,27 +53,48 @@
             <div class=" page page1" ref="page6">
                 <div class="page6-photo" ref="page6-photo">
                     <input ref="file" type="file" @change="handleChangePhoto"/>
-                    <!--<img :src="photeImg" ref="img" v-if="photeImg"/>-->
+                    <img :src="clipDataBase64" ref="img" v-if="clipDataBase64" @change="handleChangePhoto"/>
                 </div>
                 <div @click="handleCreate" ref="page6-btn" class="page6-btn">
 
                 </div>
                 <swipe-year @selected="handleSelectedTen" class="swipe-year-ten"/>
                 <swipe-year @selected="handleSelectedUnit" class="swipe-year-unit"/>
+
+                <div class="input-wrap">
+                    <div class="line1">
+                        <div>
+                            我在
+                        </div>
+                        <input type="text" v-model="inputCity"
+                               placeholder=" (填写你所在城市)"/>
+                    </div>
+                    <div class="line2">
+                        我为邮储女性代言
+                    </div>
+                </div>
             </div>
 
 
         </div>
-        <div class="clip-broad" v-show="showClip" ref="clip-broad">
+        <section v-show="showClip" ref="clip-broad" class="clip-broad">
+            <div class="edit-box" ref="edit-box">
 
-        </div>
+            </div>
+
+            <div class="btn-wrap">
+                <div class="btn cancel" @click="handleNot">取消</div>
+                <div class="btn done" @click="handleOk">完成</div>
+            </div>
+
+        </section>
     </div>
 </template>
 
 <script>
     import Hammer from 'hammerjs'
-    import Cropper from 'cropperjs'
-    import {downLoadAllImg, loadImg} from "../utils/common";
+    // import Cropper from 'cropperjs'
+    import {downLoadAllImg, loadImg , px} from "../utils/common";
     import {mapGetters, mapMutations} from 'vuex'
     import '../turn'
     import SwipeYear from "../components/SwipeYear";
@@ -103,18 +124,99 @@
             handleNext(){
                 $("#flipbook").turn('next')
             },
+            handleNot(){
+                this.showClip = false
+            },
+            handleOk(){
+
+                const $image = $(document.getElementById('clipImage'))
+                var result = $image.cropper('getCroppedCanvas', {
+                    width: 1280,
+                    height: 1280
+                });
+                this.clipDataBase64 = result.toDataURL()
+
+                console.log(' this.clipDataBase64' ,  this.clipDataBase64)
+
+                this.showClip = false
+            },
+            edit(){
+                // var winW = 5.6 * 37.5;
+                var winW = px(328/2);
+
+                console.log('winW' , winW)
+                var options = {
+                    viewMode: 3,
+                    dragMode: 'crop',
+                    background: false,
+                    zoomOnWheel: false,
+                    cropBoxMovable: false,
+                    cropBoxResizable: false,
+                    toggleDragModeOnDblclick: false,
+                    minCanvasWidth: winW,
+                    minCanvasHeight: winW,
+                    minCropBoxWidth: winW,
+                    minCropBoxHeight: winW,
+                    minContainerWidth: winW,
+                    minContainerHeight: winW,
+                    aspectRatio: 1,
+                    preview:'',
+                    data:null,
+                    restore:false,
+                    guides:true,
+                    center:true,
+                    autoCrop:false,
+                    movable:true,
+                    crop: function (data) {
+                    }
+                };
+                var $wrap = $(this.$refs['edit-box']);
+                var img = new Image()
+                img.id = 'clipImage'
+                img.style.maxHeight='100%';
+                var $image = $(img)
+                img.src = this.dataBase64
+                $wrap.append(img)
+                img.onload = function () {
+                    $image.cropper(options);
+                }
+            },
              async handleChangePhoto() {
                 try {
-                    this.showClip = true
+
+                    const reader = new FileReader()
                     const file = this.$refs.file.files[0]
-                    // const clip = this.$refs['clip-broad']
-                    const clip = this.$refs['page6-photo']
-                    const img = await loadImg(file)
-                    // img.style.width = '100%'
-                    // img.style.height = '100%'
-                    $(img).addClass('clip-img')
-                    console.log(img)
-                    clip.appendChild(img)
+                    const options = {
+                        maxWidth: 1280,
+                        canvas: true
+                    };
+
+                    const that = this
+                    loadImage.parseMetaData(file, function (data) {
+                        if (data.exif) {
+                            options.orientation = data.exif.get('Orientation');
+                        }
+                        loadImage(file, function (data) {
+                            var url = data.toDataURL();
+                            that.dataBase64 = url;
+                            that.showClip = true
+                            that.edit()
+                        }, options);
+                    });
+
+                    // reader.readAsDataURL(file)
+                    //
+                    // reader.onload = e => {
+                    //
+                    //     this.getPhotoImage(e.target.result)
+                    //
+                    //
+                    //     // self.testImage(e.target.result)
+                    // }
+
+
+
+
 
                     // let $image = $(img);
                     // $image.cropper({
@@ -283,7 +385,10 @@
                 page: 1,
                 images: null,
                 photeImg: null,
-                showClip: false
+                showClip: false,
+                inputCity:'',
+                imgPhoto:'',
+                clipDataBase64:''
             }
         },
         mounted() {
@@ -318,15 +423,49 @@
         position: relative;
 
         .clip-broad {
-            position: fixed;
+            opacity: 1;
+            display: block;
+            background: #000;
+            z-index: 22999;
+
             width: 100%;
             height: 100%;
-            left: 0;
-            right: 0;
             top: 0;
-            bottom: 0;
-            z-index: 2000;
-            background-color: white;
+            left: 0;
+            position: absolute;
+            overflow: hidden;
+
+            .edit-box{
+                width: 5.6rem;
+                height: 5.6rem;
+                left: 50%;
+                top:50%;
+                transform: translate(-50%,-50%);
+                position: absolute;
+                border: 1px solid #ccc;
+                overflow: hidden;
+            }
+            .btn-wrap {
+                width: 90%;
+                bottom: 0;
+                left: 5%;
+                height: 40px;
+                text-align: center;
+                position: absolute;
+                z-index: 2;
+                font-size: 0.33rem;
+                border-top: 1px solid #111111;
+                overflow: hidden;
+                color: #ebebeb;
+                display: flex;
+                flex-direction: row;
+                >div{
+                    flex:1;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
             /*opacity: 0.5;*/
         }
 
@@ -427,7 +566,50 @@
                     z-index: 2000;
                 }
 
+                >img{
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    left:0;
+                    top:0;
+                    z-index: 100;
+                }
 
+
+            }
+            .input-wrap{
+                $cls:#8B78B1;
+                $fsize:15px;
+                position: absolute;
+                top: #{454-43}px;
+                left: #{124-43}px;
+                font-size: 10px;
+                letter-spacing: 2px;
+                input::placeholder {
+                    color: $cls;
+                    font-size: $fsize;
+                    font-weight: bolder;
+                }
+
+                input{
+                    color:$cls;
+                    font-size: $fsize;
+                    font-weight: bolder;
+                    width: 138px;
+                    outline: none;
+                    border: 0;
+                    background-color: transparent;
+                    margin-left: 2px;
+                }
+                .line1{
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                }
+                .line2{
+                    text-align: center;
+                    margin-top: 2px;
+                }
             }
 
             .swipe-year-ten{
