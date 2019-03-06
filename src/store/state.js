@@ -9,6 +9,7 @@ export default {
     loadingProgress:'',
     isPlaying:false,
     preview:false,
+    isShare:false,
     head:null,
     keys:[
         'yz-bg',

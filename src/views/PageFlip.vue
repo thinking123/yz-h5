@@ -7,7 +7,7 @@
         <div class="border" ref="page-border" v-show="showBorder">
 
         </div>
-        <div id="flipbook" class="flipbook" ref="flipbook">
+        <div id="flipbook" class="flipbook center-page" ref="flipbook">
             <div class="hard" ref="cover">
 
             </div>
@@ -119,7 +119,7 @@
             }
         },
         methods: {
-            ...mapMutations(['setShowIndexLoadingBar', 'setLoadingProgress', 'setImages' , 'setHead']),
+            ...mapMutations(['setShowIndexLoadingBar', 'setLoadingProgress', 'setImages' , 'setHead','setIsShare']),
 
             handleSelectedTen(selected){
                 this.ten = selected
@@ -156,25 +156,14 @@
                 var options = {
                     viewMode: 3,
                     dragMode: 'crop',
-                    background: false,
-                    zoomOnWheel: false,
-                    cropBoxMovable: false,
-                    cropBoxResizable: false,
-                    toggleDragModeOnDblclick: false,
+
                     minCanvasWidth: winW,
                     minCanvasHeight: winW,
                     minCropBoxWidth: winW,
                     minCropBoxHeight: winW,
                     minContainerWidth: winW,
                     minContainerHeight: winW,
-                    aspectRatio: 1,
-                    preview:'',
-                    data:null,
-                    restore:false,
-                    guides:true,
-                    center:true,
-                    autoCrop:false,
-                    movable:true,
+
                     crop: function (data) {
                     }
                 };
@@ -222,6 +211,7 @@
                 const year = this.ten == 0 ? '' : this.ten + '' + this.unit
 
                 this.setHead(this.clipDataBase64)
+                this.setIsShare(true)
                 this.$router.push({
                     name: 'share',
                     query: {
@@ -247,6 +237,11 @@
                     console.error('init', e)
                 } finally {
                     this.setShowIndexLoadingBar(false)
+
+                    setTimeout(()=>{
+                        $("#flipbook").turn('next')
+                    } , 1000)
+
                 }
             },
             initImage(images) {
@@ -318,12 +313,12 @@
                             if (page == 2) {
                                 $('#flipbook').turn('size', px(292 * 2), px(526));
                                 console.log('add class')
-                                $('#flipbook').addClass('inner-page');
+                                $('#flipbook').addClass('inner-page').removeClass('center-page');
                             } else if (page == 1) {
                                 console.log('add class')
                                 $('#flipbook').turn('size', px(275 * 2), px(380));
 
-                                $('#flipbook').removeClass('inner-page');
+                                $('#flipbook').removeClass('inner-page').addClass('center-page');
                             }
 
 
@@ -463,6 +458,10 @@
             left: -221px;
 
 
+            &.center-page{
+                top:50%  !important;
+                transform: translateY(-50%)  !important;
+            }
             .next1{
                 position: absolute;
                 top:calpx(481-43);

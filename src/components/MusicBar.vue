@@ -1,5 +1,7 @@
 <template>
-    <div ref="wrap" class="wrap" @click="handleMusic"  v-show="!preview">
+    <div ref="wrap" class="wrap" @click="handleMusic"
+
+         v-show="!preview">
         <audio ref="music" loop="loop"  >
             <source :src="musUrl" type="audio/mpeg" >
         </audio>
@@ -14,7 +16,7 @@
     export default {
         name: "MusicBar",
         computed: {
-            ...mapGetters(['isPlaying' , 'url' , 'preview']),
+            ...mapGetters(['isPlaying' , 'url' , 'preview' , 'isShare']),
             musUrl(){
                 return `${this.url}yz-music.mp3`
             },
@@ -74,6 +76,8 @@
         border-radius: calpx(49-26);
         overflow: hidden;
     }
+
+
 
     @keyframes rotating {
         from {

@@ -8,4 +8,5 @@ export default {
     isPlaying: state => state.isPlaying,
     preview: state => state.preview,
     head: state => state.head,
+    isShare: state => state.isShare,
 }

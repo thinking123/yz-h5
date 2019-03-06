@@ -27,5 +27,8 @@ export default {
     },
     setPreview(state , preview){
         state.preview = preview
+    },
+    setIsShare(state , isShare){
+        state.isShare = isShare
     }
 }

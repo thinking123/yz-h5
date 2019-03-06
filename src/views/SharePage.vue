@@ -32,6 +32,14 @@
         <div class='tip'>
             长按保存图片
         </div>
+        <div class='qr-tip'>
+            <div>
+                扫描二维码
+            </div>
+            <div>
+                生成海报
+            </div>
+        </div>
         <div class='tip2'>
             <span v-for="item in items">
                 {{item}}
@@ -170,11 +178,11 @@
                 this.type = 4
             }
 
-            const key = `share${this.type}-bg`
-            const {image} = this.images.find(f => f.key == key)
-            image.style.width = '100%'
-            image.style.height = '100%'
-            const wrap = this.$refs.wrap
+            // const key = `share${this.type}-bg`
+            // const {image} = this.images.find(f => f.key == key)
+            // image.style.width = '100%'
+            // image.style.height = '100%'
+            // const wrap = this.$refs.wrap
 
             // wrap.appendChild(image)
 
@@ -191,13 +199,14 @@
         width: 100%;
         height: 100%;
         position: relative;
-
+        overflow: hidden;
         .bg{
             width: 100%;
             height: 100%;
             pointer-events: none;
         }
-        .tip {
+
+        .tip{
             position: absolute;
             white-space: nowrap;
             font-size: 12px;
@@ -220,12 +229,20 @@
 
         .qr {
             position: absolute;
-            width: 71px;
-            height: 71px;
-            top: 87.26%;
-            left: 32px;
+            width: 50px;
+            height: 50px;
+            bottom: 32px;
+            left: 30px;
+            font-size: 10px;
         }
 
+        .qr-tip {
+            position: absolute;
+            bottom: 32px;
+            width: 71px;
+            /*height: 71px;*/
+            left: 94px;
+        }
         .share {
             position: absolute;
             top: 63px;
@@ -256,7 +273,7 @@
                 height: 100%;
             }
 
-            $h:210px;
+            $h:245px;
             .head{
                 position: absolute;
                 height: $h;
