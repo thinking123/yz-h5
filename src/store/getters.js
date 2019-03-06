@@ -6,4 +6,5 @@ export default {
     images: state => state.images,
     keys: state => state.keys,
     isPlaying: state => state.isPlaying,
+    head: state => state.head,
 }

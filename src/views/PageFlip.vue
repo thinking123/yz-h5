@@ -1,5 +1,5 @@
 <template>
-    <div class="page-wrap">
+    <div class="page-wrap" >
         <div class="bg" ref="bg">
 
         </div>
@@ -51,9 +51,11 @@
 
             </div>
             <div class=" page page1" ref="page6">
+
                 <div class="page6-photo" ref="page6-photo">
+                    <img :src="photoHead" class="photo-head" />
                     <input ref="file" type="file" @change="handleChangePhoto"/>
-                    <img :src="clipDataBase64" ref="img" v-if="clipDataBase64" @change="handleChangePhoto"/>
+                    <img :src="clipDataBase64" ref="img" v-if="clipDataBase64" class="preview"/>
                 </div>
                 <div @click="handleCreate" ref="page6-btn" class="page6-btn">
 
@@ -108,17 +110,23 @@
             bg() {
                 return `${this.url}yz-bg.png`;
             },
+            photoHead() {
+                return `${this.url}yz-page6-head-wrap.png`;
+            },
             showBorder() {
                 console.log('showBorder', this.page)
                 return this.page > 1
             }
         },
         methods: {
-            ...mapMutations(['setShowIndexLoadingBar', 'setLoadingProgress', 'setImages']),
+            ...mapMutations(['setShowIndexLoadingBar', 'setLoadingProgress', 'setImages' , 'setHead']),
+
             handleSelectedTen(selected){
+                this.ten = selected
               console.log("handleSelectedTen" , selected)
             },
             handleSelectedUnit(selected){
+                this.unit = selected
                 console.log("handleSelectedUnit" , selected)
             },
             handleNext(){
@@ -204,70 +212,23 @@
                         }, options);
                     });
 
-                    // reader.readAsDataURL(file)
-                    //
-                    // reader.onload = e => {
-                    //
-                    //     this.getPhotoImage(e.target.result)
-                    //
-                    //
-                    //     // self.testImage(e.target.result)
-                    // }
-
-
-
-
-
-                    // let $image = $(img);
-                    // $image.cropper({
-                    //     aspectRatio: 16 / 9,
-                    //     crop: function(event) {
-                    //         console.log(event.detail.x);
-                    //         console.log(event.detail.y);
-                    //         console.log(event.detail.width);
-                    //         console.log(event.detail.height);
-                    //         console.log(event.detail.rotate);
-                    //         console.log(event.detail.scaleX);
-                    //         console.log(event.detail.scaleY);
-                    //     }
-                    // });
-                    // let cropper = $image.data('cropper');
-                    // console.log('cropper' , cropper)
-                    // let mg = this.$refs['bg-img']
-                    // console.log(mg)
-                    // new Cropper(
-                    //     mg,
-                    //     {
-                    //         viewMode: 1,
-                    //         zoomable:false,
-                    //         crop(event) {
-                    //             console.log(event.detail.x);
-                    //             console.log(event.detail.y);
-                    //             console.log(event.detail.width);
-                    //             console.log(event.detail.height);
-                    //             console.log(event.detail.rotate);
-                    //             console.log(event.detail.scaleX);
-                    //             console.log(event.detail.scaleY);
-                    //         },
-                    //     }
-                    //
-                    //     )
-                    // this.$nextTick(() => {
-                    //     new Cropper(img,
-                    //         {
-                    //             viewMode: 1,
-                    //             zoomable:false
-                    //         })
-                    // })
-                    // new Cropper(img)
-
                 } catch (e) {
                     console.error('clip', e)
                 }
             },
             handleCreate() {
 
+                const reg = /^\d{2}$/
+                const year = this.ten == 0 ? '' : this.ten + '' + this.unit
 
+                this.setHead(this.clipDataBase64)
+                this.$router.push({
+                    name: 'share',
+                    query: {
+                        year: year,
+                        city:this.inputCity
+                    }
+                })
             },
             async init() {
                 try {
@@ -388,7 +349,9 @@
                 showClip: false,
                 inputCity:'',
                 imgPhoto:'',
-                clipDataBase64:''
+                clipDataBase64:'',
+                ten:0,
+                unit:0
             }
         },
         mounted() {
@@ -550,13 +513,14 @@
 
             .page6-photo {
                 position: absolute;
-                top: #{323-43}px;
-                left: #{137-43}px;
-                height: 108px;
-                width: 108px;
+                top: 45.43%;
+                left: #{106-43}px;
+                height: calpx(435-303);
+                width: calpx(272-106);
                 border-radius: 108px;
                 /*border: 1px solid red;*/
                 overflow: hidden;
+
 
                 input {
                     position: relative;
@@ -564,15 +528,29 @@
                     width: 100%;
                     height: 100%;
                     z-index: 2000;
+                    background-color: transparent;
                 }
 
-                >img{
+                .preview{
                     position: absolute;
+                    height: calpx(431-324);
+                    width: calpx(243-136);
+                    left:50%;
+                    top:50%;
+                    transform: translate(-50%,-43%);
+                    z-index: 100;
+                    border-radius:calpx(243-136) ;
+                    overflow: hidden;
+
+                }
+
+                .photo-head{
+                    position:absolute;
                     width: 100%;
                     height: 100%;
                     left:0;
                     top:0;
-                    z-index: 100;
+                    z-index: 1;
                 }
 
 

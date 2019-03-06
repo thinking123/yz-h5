@@ -40,9 +40,9 @@
 
             },
             audioAutoPlay(id) {
-                const m = this.$refs.music
-                this.setIsPlaying(true)
-                m.play() ;
+                // const m = this.$refs.music
+                // this.setIsPlaying(true)
+                // m.play() ;
             },
         }
     }

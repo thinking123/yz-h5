@@ -21,5 +21,8 @@ export default {
     },
     setIsPlaying(state , isPlaying){
         state.isPlaying = isPlaying
+    },
+    setHead(state , head){
+        state.head = head
     }
 }
