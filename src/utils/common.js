@@ -139,8 +139,8 @@ export function downLoadImg(url) {
                     reject("Error loading image " + url)
                 } else {
                     resolve({
-                        key:url,
-                        img
+                        key:(url.replace(/.*yz-/ , '')).replace('.png' , ''),
+                        image:img
                     })
                 }
             }
@@ -148,6 +148,24 @@ export function downLoadImg(url) {
     })
 }
 
+export function loadImg(data) {
+    return new Promise((resolve, reject) => {
+        loadImage(
+            data,
+            function (img) {
+                if (img.type === "error") {
+                    console.log("Error loadImg image ");
+                    reject("Error loadImg image ")
+                } else {
+                    resolve(img)
+                }
+            },
+            {
+                crossOrigin:true
+            }
+        );
+    })
+}
 
 export async function downLoadAllImg(urls, cb) {
     let progress = 0
@@ -163,4 +181,10 @@ export async function downLoadAllImg(urls, cb) {
 
     return imgs
 
+}
+export function px(v) {
+    const pxTorem = window.innerWidth / 10
+    const p = v / 37.5 * pxTorem
+    console.log('p', p, pxTorem, v)
+    return p
 }

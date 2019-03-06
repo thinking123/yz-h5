@@ -3,4 +3,7 @@ export default {
     url: state => state.url,
     showIndexLoadingBar: state => state.showIndexLoadingBar,
     loadingProgress: state => state.loadingProgress,
+    images: state => state.images,
+    keys: state => state.keys,
+    isPlaying: state => state.isPlaying,
 }

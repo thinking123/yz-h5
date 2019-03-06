@@ -15,5 +15,11 @@ export default {
     },
     setLoadingProgress(state , loadingProgress){
         state.loadingProgress = loadingProgress
+    },
+    setImages(state , images){
+        state.images = images
+    },
+    setIsPlaying(state , isPlaying){
+        state.isPlaying = isPlaying
     }
 }
