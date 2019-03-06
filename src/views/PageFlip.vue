@@ -184,7 +184,8 @@
             },
             edit(){
                 // var winW = 5.6 * 37.5;
-                var winW = px(328/2);
+                // var winW = px(328/2);
+                var winW = px(75);
 
                 console.log('winW' , winW)
                 var options = {
@@ -491,8 +492,8 @@
             overflow: hidden;
 
             .edit-box{
-                width: 5.6rem;
-                height: 5.6rem;
+                width: 300px;
+                height: 300px;
                 left: 50%;
                 top:50%;
                 transform: translate(-50%,-50%);

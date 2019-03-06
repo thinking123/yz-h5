@@ -146,7 +146,7 @@
                     this.timeOutEvent = setTimeout(()=> {
                         console.log("longpress")
                         this.saveImage()
-                    }, 1500);
+                    }, 300);
                 }
 
                 // return false
