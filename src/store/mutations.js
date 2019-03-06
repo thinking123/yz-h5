@@ -24,5 +24,8 @@ export default {
     },
     setHead(state , head){
         state.head = head
+    },
+    setPreview(state , preview){
+        state.preview = preview
     }
 }

@@ -8,6 +8,7 @@ export default {
     showIndexLoadingBar:false,
     loadingProgress:'',
     isPlaying:false,
+    preview:false,
     head:null,
     keys:[
         'yz-bg',

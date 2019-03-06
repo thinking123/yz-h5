@@ -18,13 +18,16 @@
             我为邮储女性代言。
         </div>
         <img :src="qr" class="qr"/>
-        <div class="share">
+        <div class="share"  v-if="!preview">
             <img :src="share"/>
         </div>
 
         <div class="head-wrap">
-            <img class="head-wrap-img" :scr="headWrap"/>
-            <img :src="head" class="head"/>
+            <img class="head-wrap-img" :src="headWrap"/>
+            <div class="head">
+                <img :src="head" />
+            </div>
+
         </div>
         <div class='tip'>
             长按保存图片
@@ -35,7 +38,7 @@
             </span>
         </div>
 
-        <img :src="preview" v-if="preview" class="preview" @click="preview=false"/>
+        <img :src="previewurl" v-if="preview" class="preview" @click="handleEndPreview"/>
     </div>
 </template>
 
@@ -61,7 +64,7 @@
 “丈量时光芳华，撷取岁月凝香；优雅从容，无悔担当。”
     * */
 
-    import {mapGetters} from 'vuex'
+    import {mapGetters , mapMutations} from 'vuex'
     import html2canvas from 'html2canvas';
     export default {
         name: "SharePage",
@@ -70,11 +73,11 @@
                 type: 1,
                 year: '',
                 city: '',
-                preview:false
+                previewurl:''
             }
         },
         computed: {
-            ...mapGetters(['images', 'head', 'url']),
+            ...mapGetters(['images', 'head', 'url' , 'preview']),
             items() {
                 const str = '邮储银行微工会2019女神节特别策划'
                 return str.split('')
@@ -101,6 +104,10 @@
             }
         },
         methods: {
+            ...mapMutations(['setPreview']),
+            handleEndPreview(){
+                this.setPreview(false)
+            },
             handleTouchStart(e){
                 if(this.preview){
 
@@ -130,12 +137,18 @@
             },
             saveImage() {
                 const that = this
+                this.setPreview(true)
                 html2canvas(document.body , {
                     letterRendering: 1, useCORS: true,
                 }).then(canvas => {
                     // document.body.appendChild(canvas);
-                    that.preview = canvas.toDataURL()
-                    alert('preview')
+                    const previewurl = canvas.toDataURL()
+                    that.previewurl = previewurl
+
+                    // alert('preview')
+                }).catch(err=>{
+                    this.setPreview(false)
+                    console.error('error screen shot')
                 });
             }
         },
@@ -235,21 +248,28 @@
 
             top: 10.49%;
             left: 89px;
-            overflow: hidden;
+            /*overflow: hidden;*/
 
+            z-index: 2;
             .head-wrap-img {
                 width: 100%;
                 height: 100%;
             }
 
+            $h:210px;
             .head{
                 position: absolute;
-                height: 245px;
-                width: 245px;
-                border-radius: 245px;
+                height: $h;
+                width: $h;
+                border-radius: $h;
                 left:50%;
                 top: 50%;
                 transform: translate(-50%,-50%);
+                overflow: hidden;
+                >img{
+                    width: 100%;
+                    height: 100%;
+                }
             }
         }
 
