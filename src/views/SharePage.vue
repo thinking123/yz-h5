@@ -22,9 +22,10 @@
             <img :src="share"/>
         </div>
 
-        <div class="head-wrap">
-            <img class="head-wrap-img" :src="headWrap"/>
-            <div class="head">
+        <div class="head-wrap" :style="hStyle">
+            <img class="head-wrap-img" :src="headWrap"
+               />
+            <div class="head"   :style="ihStyle">
                 <img :src="head" />
             </div>
 
@@ -81,7 +82,10 @@
                 type: 1,
                 year: '',
                 city: '',
-                previewurl:''
+                previewurl:'',
+                w:'',
+                h:'',
+                ih:''
             }
         },
         computed: {
@@ -109,10 +113,24 @@
                     'color3': this.type == 3,
                     'color4': this.type == 4,
                 }
+            },
+            hStyle(){
+                return {
+                    width:this.w + 'px',
+                    height:this.h + 'px',
+                }
+            },
+            ihStyle(){
+                return {
+                    width:this.ih + 'px',
+                    height:this.ih + 'px',
+                    borderRadius:this.ih + 'px',
+                }
             }
         },
         methods: {
-            ...mapMutations(['setPreview']),
+            ...mapMutations(['setPreview' ,
+            'setIsShare']),
             handleEndPreview(){
                 this.setPreview(false)
             },
@@ -161,7 +179,7 @@
             }
         },
         mounted() {
-
+            this.setIsShare(true)
             console.log('this.$route.query', this.$route.query)
             const {year, city} = this.$route.query
 
@@ -178,6 +196,14 @@
                 this.type = 4
             }
 
+            const ph = 259/667 , wh = window.innerHeight - 64
+            console.log('wh' , wh)
+            const h = ph * wh
+            const w = 272/259 * h
+            const ih = 245/667 * wh
+            this.h = h
+            this.w = w
+            this.ih = ih
             // const key = `share${this.type}-bg`
             // const {image} = this.images.find(f => f.key == key)
             // image.style.width = '100%'
@@ -188,6 +214,17 @@
 
 
             // wrap.addEventListener('long-press', this.saveImage);
+        },
+        beforeRouteEnter(to, from, next) {
+            next()
+        },
+        beforeRouteUpdate(to, from, next) {
+            next()
+        },
+        beforeRouteLeave(to, from, next) {
+            this.setIsShare(false)
+            window.location.href = window.location.host
+            next()
         }
     }
 </script>
@@ -217,13 +254,15 @@
         .tip2 {
             position: absolute;
             font-size: 10px;
-            top: 32px;
+            /*top: 32px;*/
+            top: 4.8%;
             left: 30px;
 
             >span{
                 /*margin: 1px 0;*/
                 display: block;
                 text-align: center;
+                margin: -3px 0;
             }
         }
 
@@ -231,14 +270,14 @@
             position: absolute;
             width: 50px;
             height: 50px;
-            bottom: 32px;
+            bottom: 4.8%;
             left: 30px;
             font-size: 10px;
         }
 
         .qr-tip {
             position: absolute;
-            bottom: 32px;
+            bottom: 4.8%;
             width: 71px;
             /*height: 71px;*/
             left: 94px;

@@ -25,6 +25,9 @@
                 return `${this.url}yz-music-btn.png`
             }
         },
+        mounted() {
+
+        }
     }
 </script>
 
@@ -48,7 +51,8 @@
 
         .footer{
             position: absolute;
-            bottom:30px;
+            /*bottom:4.5%;*/
+            top:96.7%;
             left: 50%;
             transform: translateX(-50%);
             z-index: 3000;

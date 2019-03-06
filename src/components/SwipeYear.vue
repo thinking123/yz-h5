@@ -1,7 +1,7 @@
 <template>
-    <div class="wrap">
+    <div class="wrap" >
         <div class="swipe-pre" @click="handlePre"/>
-        <div class='swipe-time-wrap' ref="swipe-wrap">
+        <div class='swipe-time-wrap' ref="swipe-wrap" >
 
         </div>
         <div class="swipe-next" @click="handleNext"/>
@@ -12,7 +12,7 @@
 <script>
     import {mapGetters} from 'vuex'
     import {px} from "../utils/common";
-
+    import Hammer from 'hammerjs'
     export default {
         name: "SwipeYear",
         computed: {
@@ -53,6 +53,34 @@
                     // next.removeClass('swipe-time-item-pre').addClass('swipe-time-item-active')
                 }
             }
+        },
+        mounted(){
+            const flipbook = this.$refs['swipe-wrap']
+
+            this.manager = new Hammer.Manager(flipbook);
+            const Swipe = new Hammer.Swipe();
+            this.manager.add(Swipe);
+
+            this.manager.on('swipe', function (e) {
+                const direction = e.offsetDirection;
+
+                if (direction === 4) {
+
+                    console.log('swipe')
+                    // $("#flipbook").turn('previous')
+
+                    this.handlePre()
+                    // console.log('you swipe' , direction)
+                    // e.target.innerText =  deltaX;
+                    // e.target.style.transform = translate3d;
+                } else if (direction === 2) {
+                    console.log('swipe handleNext')
+
+            this.handleNext()
+                    // $("#flipbook").turn('next')
+                }
+            });
+
         },
         data() {
             return {

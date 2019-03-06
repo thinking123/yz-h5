@@ -9,8 +9,8 @@ export default [
         path: '/', component: Layout,
         children: [
             {path: '/', redirect: {name: 'page'}},
-            {path: '/share', name: 'share', component: SharePage,  meta: { title: '首页' }},
-            {path: '/page', name: 'page', component: PageFilp,  meta: { title: '首页' }}
+            {path: '/share', name: 'share', component: SharePage,  meta: { title: '今天，我为邮储女性代言' }},
+            {path: '/page', name: 'page', component: PageFilp,  meta: { title: '今天，我为邮储女性代言' }}
         ]
     },
 ]

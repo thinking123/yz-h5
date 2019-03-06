@@ -13,8 +13,9 @@ import App from './App.vue'
 import routes from './router'
 import store from './store'
 import './assets/css/index.css'
-import 'weui'
-
+// import 'weui'
+import Mint from 'mint-ui';
+import 'mint-ui/lib/style.css';
 
 Vue.config.productionTip = false
 Vue.use(VueRouter)

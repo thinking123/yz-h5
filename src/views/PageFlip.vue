@@ -1,5 +1,5 @@
 <template>
-    <div class="page-wrap" >
+    <div class="page-wrap" ref="pageWrap">
         <div class="bg" ref="bg">
 
         </div>
@@ -69,6 +69,8 @@
                             我在
                         </div>
                         <input type="text" v-model="inputCity"
+                               @blur="handleBlur"
+                               @focus="handleFocus"
                                placeholder=" (填写你所在城市)"/>
                     </div>
                     <div class="line2">
@@ -95,8 +97,9 @@
 
 <script>
     import Hammer from 'hammerjs'
+    import { MessageBox } from 'mint-ui';
     // import Cropper from 'cropperjs'
-    import {downLoadAllImg, loadImg , px} from "../utils/common";
+    import {downLoadAllImg, loadImg , px , isIphone , isIphone6} from "../utils/common";
     import {mapGetters, mapMutations} from 'vuex'
     import '../turn'
     import SwipeYear from "../components/SwipeYear";
@@ -119,7 +122,7 @@
             }
         },
         methods: {
-            ...mapMutations(['setShowIndexLoadingBar', 'setLoadingProgress', 'setImages' , 'setHead','setIsShare']),
+            ...mapMutations(['setShowIndexLoadingBar', 'setLoadingProgress', 'setImages' , 'setHead','setIsShare' , 'images']),
 
             handleSelectedTen(selected){
                 this.ten = selected
@@ -134,6 +137,37 @@
             },
             handleNot(){
                 this.showClip = false
+            },
+            handleBlur(){
+                this.scrollToForIphone6()
+            },
+            handleFocus(){
+                // this.$router.push({
+                //     name: 'share'
+                // })
+
+                this.nav = navigator.userAgent
+                if (!isIphone()) {
+                    const register = this.$refs.pageWrap
+                    $(register).height(this.bodyHeight);
+                }
+            },
+            scrollToForIphone6() {
+                if (isIphone()) {
+                    // alert('iphone6 scroll')
+                    // this.err = 'iphone6 scroll'
+                    setTimeout(function () {
+                        var scrollHeight = document.documentElement.scrollTop || document.body.scrollTop || 0;
+                        window.scrollTo(0, Math.max(scrollHeight - 1, 0));
+                    }, 100);
+                }
+
+                // setTimeout(()=>{
+                //     $(window).scrollTop(0,0);
+                // } , 100)
+
+
+
             },
             handleOk(){
 
@@ -155,8 +189,8 @@
                 console.log('winW' , winW)
                 var options = {
                     viewMode: 3,
-                    dragMode: 'crop',
-
+                    dragMode: 'move',
+                    aspectRatio: 1,
                     minCanvasWidth: winW,
                     minCanvasHeight: winW,
                     minCropBoxWidth: winW,
@@ -205,13 +239,33 @@
                     console.error('clip', e)
                 }
             },
+            showMsg(msg){
+                MessageBox({
+                    title: '提示',
+                    message: msg
+                });
+            },
             handleCreate() {
 
-                const reg = /^\d{2}$/
-                const year = this.ten == 0 ? '' : this.ten + '' + this.unit
 
+                const reg = /^\d{2}$/
+                const year = (this.ten == 0 ? '' : this.ten) + '' + this.unit
+
+                if(year == 0){
+                    // return  $.alert("选择年份");
+                    return    this.showMsg("选择年份")
+                }
+                if( !this.inputCity || !this.inputCity.trim()){
+                    // return  $.alert("输入城市");
+                    return    this.showMsg("输入城市")
+                }
+                if(!this.clipDataBase64){
+                    // return  $.alert("选择照片");
+                    return    this.showMsg("选择照片")
+                }
                 this.setHead(this.clipDataBase64)
                 this.setIsShare(true)
+                $('#flipbook').turn('destroy').remove()
                 this.$router.push({
                     name: 'share',
                     query: {
@@ -222,6 +276,9 @@
             },
             async init() {
                 try {
+                    if(this.images.length > 0){
+                        return
+                    }
                     const urls = this.keys.map(key => `${this.url}${key}.png`)
                     console.log('urls', urls)
                     this.setShowIndexLoadingBar(true)
@@ -251,7 +308,10 @@
                     if (dom) {
                         image.style.width = '100%'
                         image.style.height = '100%'
+
+
                         dom.appendChild(image)
+
 
                     } else {
                         // console.error(' exit dom' , key)
@@ -274,6 +334,7 @@
                         // console.log('you swipe' , direction)
                         // e.target.innerText =  deltaX;
                         // e.target.style.transform = translate3d;
+
                     } else if (direction === 2) {
 
 
@@ -312,8 +373,16 @@
                             console.log('turning', this.page)
                             if (page == 2) {
                                 $('#flipbook').turn('size', px(292 * 2), px(526));
+
+
                                 console.log('add class')
                                 $('#flipbook').addClass('inner-page').removeClass('center-page');
+
+                                // that.$nextTick(()=>{
+                                //     console.log('flipbook dom'  , $(that.$refs.page2).height())
+                                //     console.log('flipbook children'  , $(that.$refs.page2).children()[1].height)
+                                // })
+
                             } else if (page == 1) {
                                 console.log('add class')
                                 $('#flipbook').turn('size', px(275 * 2), px(380));
@@ -339,7 +408,7 @@
         data() {
             return {
                 page: 1,
-                images: null,
+                // images: null,
                 photeImg: null,
                 showClip: false,
                 inputCity:'',
@@ -350,10 +419,35 @@
             }
         },
         mounted() {
+            if (!isIphone()) {
+                setTimeout(() => {
 
+                    this.bodyHeight = $('body').height();
+                }, 500)
+            }
             this.init()
 
 
+        },
+        beforeRouteEnter(to, from, next) {
+            next()
+        },
+        beforeRouteUpdate(to, from, next) {
+            next()
+        },
+        beforeRouteLeave(to, from, next) {
+
+       //      if ($('#flipbook').turn('hasPage', 1)) {
+       // alert('page')
+       //      }
+            //
+            // $( '#flipbook' ).turn( 'destroy' );
+            // $( window ).unbind( 'keydown' );
+            // $('#flipbook').turn('size', px(275 * 2), px(380));
+            //
+            // $('#flipbook').removeClass('inner-page').addClass('center-page');
+            // window.location.href = window.location.host
+            next()
         }
     }
 </script>
@@ -363,6 +457,9 @@
         max-width: 100% !important;
     }
 
+    .mint-msgbox-btn{
+        font-size: 12px;
+    }
     .page6-photo-img {
         height: 100%;
         width: 100%;
@@ -582,6 +679,7 @@
                     display: flex;
                     flex-direction: row;
                     align-items: center;
+                    justify-content: center;
                 }
                 .line2{
                     text-align: center;
