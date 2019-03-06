@@ -65,21 +65,33 @@
                     const items = v.filter(f => f.key.indexOf('num') > -1)
                     const ref = this.$refs['swipe-wrap']
                     if (ref) {
+                        let i = 0;
                         items.forEach(item => {
+
+                            const div = document.createElement("div");
+                            // div.style.width = '100%'
+                            // div.style.height = '100%'
                             const img = item.image
                             const key = item.key
 
-                            img.id = key
+                            div.id = key
 
-                            $(img).addClass('swipe-time-item')
+                            $(div).addClass('swipe-time-item')
                             if (key.indexOf('0') > -1) {
-                                $(img).addClass('swipe-time-item-active')
+                                $(div).addClass('swipe-time-item-active')
                             } else {
-                                $(img).addClass('swipe-time-item-next')
+                                $(div).addClass('swipe-time-item-next')
                             }
+
+                            const cls = `swipe-time-image${i}`
+                            $(img).addClass(cls)
+                            $(img).addClass('swipe-time-image')
                             // const res =$(img).clone()
-                            $(img).clone(true).appendTo(ref);
+                            $(img).clone(true).appendTo(div);
+                            ref.appendChild(div)
                             // ref.appendChild(res)
+
+                            i += 1
                         })
 
 
@@ -116,6 +128,53 @@
 
     .swipe-time-item-next {
         transform: translateY(100%);
+    }
+
+    .swipe-time-image{
+        position: absolute;
+        left:50%;
+        top:50%;
+        transform: translate(-50%,-50%);
+    }
+    .swipe-time-image0{
+        width: 56px;
+        height: 58px;
+    }
+    .swipe-time-image1{
+        width: 48px;
+        height: 76px;
+    }
+    .swipe-time-image2{
+        width: 59px;
+        height: 67px;
+    }
+    .swipe-time-image3{
+        width: 51px;
+        height: 82px;
+    }
+    .swipe-time-image4{
+        width: 59px;
+        height: 80px;
+    }
+    .swipe-time-image5{
+        width: 48px;
+        height: 82px;
+    }
+    .swipe-time-image6{
+        width: 46px;
+        height: 67px;
+    }
+    .swipe-time-image7{
+        width: 50px;
+        height: 72px;
+    }
+    .swipe-time-image8{
+        width: 48px;
+        height: 67px;
+    }
+    .swipe-time-image9{
+        width: 55px;
+        height: 79px;
     }
 </style>
 <style scoped lang="scss">
