@@ -70,7 +70,7 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%,-50%);
-            font-size: 30px;
+            font-size: 13px;
             color: #e34981;
             font-weight: bolder;
         }
