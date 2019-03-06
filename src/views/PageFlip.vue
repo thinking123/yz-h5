@@ -16,35 +16,35 @@
 
             </div>
             <div class=" page page1" ref="page1">
-
+                <next-button @next="handleNext" class="next1"/>
             </div>
 
             <div class="page page1" ref="page2-left">
 
             </div>
             <div class=" page page1" ref="page2">
-
+                <next-button @next="handleNext" class="next2"/>
             </div>
 
             <div class="page page1" ref="page3-left">
 
             </div>
             <div class=" page page1" ref="page3">
-
+                <next-button @next="handleNext" class="next3"/>
             </div>
 
             <div class="page page1" ref="page4-left">
 
             </div>
             <div class=" page page1" ref="page4">
-
+                <next-button @next="handleNext" class="next4"/>
             </div>
 
             <div class="page page1" ref="page5-left">
 
             </div>
             <div class=" page page1" ref="page5">
-
+                <next-button @next="handleNext" class="next5"/>
             </div>
 
             <div class="page page1" ref="page6-left">
@@ -77,10 +77,11 @@
     import {mapGetters, mapMutations} from 'vuex'
     import '../turn'
     import SwipeYear from "../components/SwipeYear";
+    import NextButton from "../components/NextButton";
 
     export default {
         name: "PageFlip",
-        components: {SwipeYear},
+        components: {NextButton, SwipeYear},
         computed: {
             ...mapGetters(['url', 'keys']),
             bg() {
@@ -98,6 +99,9 @@
             },
             handleSelectedUnit(selected){
                 console.log("handleSelectedUnit" , selected)
+            },
+            handleNext(){
+                $("#flipbook").turn('next')
             },
              async handleChangePhoto() {
                 try {
@@ -356,11 +360,42 @@
             transition: all 0.3 ease-in-out;
             left: -221px;
 
+
+            .next1{
+                position: absolute;
+                top:calpx(481-43);
+                left:50%;
+                transform: translateX(-50%);
+            }
+            .next2{
+                position: absolute;
+                top:calpx(500-43);
+                left:50%;
+                transform: translateX(-50%);
+            }
+            .next3{
+                position: absolute;
+                top:calpx(500-43);
+                left:50%;
+                transform: translateX(-50%);
+            }
+            .next4{
+                position: absolute;
+                top:calpx(490-43);
+                left:50%;
+                transform: translateX(-50%);
+            }
+            .next5{
+                position: absolute;
+                top:calpx(500-43);
+                left:50%;
+                transform: translateX(-50%);
+            }
             .page {
                 /*border: 2px solid red;*/
                 height: 526px;
                 width: 292px;
-
+                position: relative;
                 > img {
                     width: 100%;
                     height: 100%;
