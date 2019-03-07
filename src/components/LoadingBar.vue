@@ -1,8 +1,9 @@
 <template>
     <div class="loading-bar" @touchstart="touch" v-if="loading">
-        <mt-spinner type="fading-circle" class="center">
+        <spinner type="fading-circle" class="center" color="rgb(38, 162, 255);">
 
-        </mt-spinner>
+        </spinner>
+
     </div>
 </template>
 
@@ -11,6 +12,7 @@
     import { Spinner } from 'mint-ui';
     export default {
         name: "LoadingBar",
+        components:{Spinner},
         computed: {
             ...mapGetters(['loading'])
         },

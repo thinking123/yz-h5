@@ -187,14 +187,23 @@
                         width: 1280,
                         height: 1280
                     });
-                    this.clipDataBase64 = result.toDataURL()
+
+                    this.showClip = false
+                    const base64 = result.toDataURL()
+                    const uploadImg = this.base64ToFile(base64)
+
+                    const formData = new FormData();
+                    formData.append("file", uploadImg)
+                    this.returnUrlHead = await uploadFile(formData)
+
+
+                    this.clipDataBase64 = this.returnUrlHead
 
 
                     console.log(' this.clipDataBase64' ,  this.clipDataBase64)
+                    // $image.cropper('clear')
 
-                    this.showClip = false
-                    const uploadImg = this.base64ToFile(this.clipDataBase64)
-                    this.returnUrlHead = uploadFile(uploadImg)
+
                 }catch (e) {
                     showMsg(e)
                 }
@@ -209,6 +218,7 @@
                 var options = {
                     viewMode: 3,
                     dragMode: 'move',
+                    Restore:false,
                     aspectRatio: 1,
                     minCanvasWidth: winW,
                     minCanvasHeight: winW,
@@ -221,6 +231,9 @@
                     }
                 };
                 var $wrap = $(this.$refs['edit-box']);
+
+                //清除上一次的图片
+                $wrap.empty();
                 var img = new Image()
                 img.id = 'clipImage'
                 img.style.maxHeight='100%';
@@ -228,8 +241,10 @@
                 img.src = this.dataBase64
                 $wrap.append(img)
                 img.onload = function () {
+
                     $image.cropper(options);
                 }
+
             },
              async handleChangePhoto() {
                 try {

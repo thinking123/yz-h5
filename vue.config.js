@@ -8,7 +8,7 @@ const postcss = px2rem({
 
 module.exports = {
     devServer: {
-        proxy: 'http://psbc.ysmine.com:8088'
+        proxy: 'http://psbc.ysmine.com/login/'
     },
     css: {
         loaderOptions: {

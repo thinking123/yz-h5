@@ -36,7 +36,9 @@
         },
         methods: {
             handleChange(e){
-                this.$emit('selected',   this.$refs.mySwiper.swiper.activeIndex )
+                // console.log(this.swiper)
+                //loop之后使用 realIndex
+                this.$emit('selected',   this.$refs.mySwiper.swiper.realIndex )
 
             },
             pre(){
@@ -52,13 +54,13 @@
             },
         },
         updated() {
-            if (this.urls.length>1) {
-                console.log(this.swiper);
-                this.swiper.init();
-            }
+            // if (this.urls.length>1) {
+            //     console.log(this.swiper);
+            //     this.swiper.init();
+            // }
         },
-        mounted(){
-
+        created(){
+            //在create的设置数据，就可以loop显示
             for(let i = 0 ; i< 10 ; i++){
                 const u = `${this.url}yz-num-${i}.png`
                 const cs = `swipe-time-image${i}`
@@ -67,6 +69,11 @@
                     cs
                 })
             }
+        },
+        mounted(){
+
+
+
         },
         data() {
             return {

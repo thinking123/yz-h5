@@ -33,12 +33,11 @@ export async function getSignInfo() {
 export async function uploadFile(formData) {
     const url = `/api/uploadImg`
     console.log('form data' , formData)
-    return http.post(url, formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-            'Accept': 'text/plain'
-        }
-    }).then(parseRes)
+    const headers =  {
+        'Content-Type': 'multipart/form-data',
+        'Accept': 'text/plain'
+    }
+    return http.post(url, formData, {headers}).then(parseRes)
 }
 
 export function register(openId , city, userHeader, workYear) {

@@ -2,7 +2,7 @@ import axios from 'axios'
 import store from '../store'
 const pro = process.env.NODE_ENV === 'production'
 axios.defaults.timeout = 20000;
-axios.defaults.baseURL = pro ?'http://psbc.ysmine.com:8088' : '/' ;
+axios.defaults.baseURL = pro ?'http://psbc.ysmine.com/login/' : '/' ;
 
 let timer = []
 
@@ -12,7 +12,9 @@ axios.interceptors.request.use(
         //     store.commit('CHANGE_LOADING_BAR', true)
         // }, 100))
         store.commit('CHANGE_LOADING_BAR', true)
-        // config.headers['Content-type'] = 'application/json;chartset=utf-8'
+        config.headers['token'] =store.state.openid
+
+        console.log('request' , config)
         return config;
     },
     err => {
