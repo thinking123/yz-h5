@@ -256,14 +256,15 @@
                     // return  $.alert("选择年份");
                     return    this.showMsg("选择年份")
                 }
-                if( !this.inputCity || !this.inputCity.trim()){
-                    // return  $.alert("输入城市");
-                    return    this.showMsg("输入城市")
-                }
                 if(!this.clipDataBase64){
                     // return  $.alert("选择照片");
                     return    this.showMsg("选择照片")
                 }
+                if( !this.inputCity || !this.inputCity.trim()){
+                    // return  $.alert("输入城市");
+                    return    this.showMsg("输入城市")
+                }
+
                 this.setHead(this.clipDataBase64)
                 this.setIsShare(true)
                 $('#flipbook').turn('destroy').remove()

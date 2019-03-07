@@ -3,8 +3,9 @@
         <div class="swipe-pre  swiper-button-prev " @click="pre"
         ></div>
         <swiper class="swipe-time-wrap " :options="swiperOption"   ref="mySwiper"
+
                 @slideChange="handleChange">
-            <swiper-slide class="swipe-time-wrap" v-for="(url, index) in urls" :key="index">
+            <swiper-slide class="swipe-time-wrap" v-for="(url, index) in urls" :key="url.u">
                 <div class="swipe-time-item ">
                     <img :src="url.u" :class="url.cs"/>
                 </div>
@@ -35,7 +36,7 @@
         },
         methods: {
             handleChange(e){
-                this.$emit('selected',   this.$refs.mySwiper.swiper.activeIndex)
+                this.$emit('selected',   this.$refs.mySwiper.swiper.activeIndex )
 
             },
             pre(){
@@ -49,6 +50,12 @@
             cls: {
                 type: String
             },
+        },
+        updated() {
+            if (this.urls.length>1) {
+                console.log(this.swiper);
+                this.swiper.init();
+            }
         },
         mounted(){
 
@@ -68,6 +75,9 @@
                 swiperOption: {
                     direction: 'vertical', // 垂直切换选项
                     loop: true,
+
+                    observer:true,//修改swiper自己或子元素时，自动初始化swiper
+                    observeParents:true,
 
                 }
             }
