@@ -34,7 +34,9 @@ const router = new VueRouter({
 router.beforeEach((pageTo, pageFrom, next) => {
 
     let {openid} = pageTo.query
+    console.log('pageTo' , pageTo , pageTo.query)
     if(openid){
+        console.log('get openid' , openid)
         store.commit('setOpenid' , openid)
     }
     next()

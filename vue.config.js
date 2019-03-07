@@ -7,8 +7,9 @@ const postcss = px2rem({
 })
 
 module.exports = {
+    productionSourceMap: false,
     devServer: {
-        proxy: 'http://psbc.ysmine.com/login/'
+        proxy: 'http://psbc.ysmine.com/'
     },
     css: {
         loaderOptions: {

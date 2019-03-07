@@ -194,7 +194,7 @@
                     } = await getSignInfo(link)
                     const title = '今天，我为邮储女性代言'
                     const desc = '快来编写专属你的邮储女性“代言海报”'
-                    const imgUrl = `${this.url}yz-share-bg.png`
+                    const imgUrl = `${this.url}yz-share-bg.jpg`
                     const jsApiList = [
                         'updateAppMessageShareData',
                         'updateTimelineShareData',
@@ -222,57 +222,61 @@
         mounted() {
             this.init()
             this.setIsShare(true)
-            console.log('this.$route.query', this.$route.query)
-            const {year, city} = this.$route.query
 
-            this.year = year
-            console.log('year' , year)
-            this.city = city
-            if (year <= 5) {
-                this.type = 1
-            } else if (year <= 10) {
-                this.type = 2
-            } else if (year <= 20) {
-                this.type = 3
-            } else {
-                this.type = 4
-            }
+            $this.nextTick(()=>{
+                console.log('this.$route.query', this.$route.query)
+                const {year, city} = this.$route.query
 
-            const ph = 259/667 , wh = window.innerHeight - 64
+                this.year = year
+                console.log('year' , year)
+                this.city = city
+                if (year <= 5) {
+                    this.type = 1
+                } else if (year <= 10) {
+                    this.type = 2
+                } else if (year <= 20) {
+                    this.type = 3
+                } else {
+                    this.type = 4
+                }
 
-            const oh = (71 + 259/2)/667
-            const ow = (89 + 272/2)/375
-            let wpx = px(272)
-            let hpx = px(259)
-            let w , h , ih
-            let pw = wpx / wh
+                const ph = 259/667 , wh = window.innerHeight - 64
 
-            let np = hpx / wh
-            if(np > ph){
-                //height比例过大
-                h = ph * wh
-                w = 272/259 * h
-                ih = 0.946 * h
-            }else{
-                //不用调整
-                h = hpx
-                w = wpx
-                ih = 0.946 * h
-            }
+                const oh = (71 + 259/2)/667
+                const ow = (89 + 272/2)/375
+                let wpx = px(272)
+                let hpx = px(259)
+                let w , h , ih
+                let pw = wpx / wh
 
-            let top = oh * wh - h /2
-            let left = ow * window.innerWidth - w/2
+                let np = hpx / wh
+                if(np > ph){
+                    //height比例过大
+                    h = ph * wh
+                    w = 272/259 * h
+                    ih = 0.946 * h
+                }else{
+                    //不用调整
+                    h = hpx
+                    w = wpx
+                    ih = 0.946 * h
+                }
+
+                let top = oh * wh - h /2
+                let left = ow * window.innerWidth - w/2
 
 
-            // console.log('wh' , wh)
-            //  h = ph * wh
-            //  w = 272/259 * h
-            // const ih = 0.946 * h
-            this.h = h
-            this.w = w
-            this.ih = ih
-            this.top = top
-            this.left = left
+                // console.log('wh' , wh)
+                //  h = ph * wh
+                //  w = 272/259 * h
+                // const ih = 0.946 * h
+                this.h = h
+                this.w = w
+                this.ih = ih
+                this.top = top
+                this.left = left
+            })
+
             // const key = `share${this.type}-bg`
             // const {image} = this.images.find(f => f.key == key)
             // image.style.width = '100%'

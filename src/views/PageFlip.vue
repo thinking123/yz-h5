@@ -73,6 +73,7 @@
                         <input type="text" v-model="inputCity"
                                @blur="handleBlur"
                                @focus="handleFocus"
+                               id="input-city"
                                placeholder=" (填写你所在城市)"/>
                     </div>
                     <div class="line2">
@@ -306,6 +307,9 @@
                     }
                     //
                     // //
+
+                    $('#input-city').blur()
+
                     await register(this.openid , this.inputCity ,  year)
 
                     this.setHead(this.clipDataBase64)
