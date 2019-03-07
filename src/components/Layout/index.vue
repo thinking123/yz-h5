@@ -4,7 +4,7 @@
         <music-bar class="music-bar"  :class="{'top':!isShare}"/>
         <router-view></router-view>
         <div class="footer" v-if="!isShare">
-            邮储银行微员工特别呈现
+            邮储银行微工会特别呈现
         </div>
     </div>
 </template>
