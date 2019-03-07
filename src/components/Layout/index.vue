@@ -1,6 +1,7 @@
 <template>
     <div class="layout">
         <index-loading-bar/>
+        <loading-bar/>
         <music-bar class="music-bar"  :class="{'top':!isShare}"/>
         <router-view></router-view>
         <div class="footer" v-if="!isShare">
@@ -13,9 +14,10 @@
     import IndexLoadingBar from "../IndexLoadingBar";
     import MusicBar from "../MusicBar";
     import {mapGetters, mapMutations} from 'vuex'
+    import LoadingBar from "../LoadingBar";
     export default {
         name: "Layout",
-        components: {MusicBar, IndexLoadingBar},
+        components: {LoadingBar, MusicBar, IndexLoadingBar},
         computed: {
             ...mapGetters(['isShare' ]),
             musUrl(){

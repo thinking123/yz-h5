@@ -2,7 +2,7 @@ import axios from 'axios'
 import store from '../store'
 const pro = process.env.NODE_ENV === 'production'
 axios.defaults.timeout = 20000;
-axios.defaults.baseURL = pro ?'http://47.105.252.142' : '/' ;
+axios.defaults.baseURL = pro ?'http://psbc.ysmine.com:8088' : '/' ;
 
 let timer = []
 

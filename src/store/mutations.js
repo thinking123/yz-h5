@@ -30,5 +30,8 @@ export default {
     },
     setIsShare(state , isShare){
         state.isShare = isShare
+    },
+    setOpenid(state , openid){
+        state.openid = openid
     }
 }

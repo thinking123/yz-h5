@@ -9,4 +9,5 @@ export default {
     preview: state => state.preview,
     head: state => state.head,
     isShare: state => state.isShare,
+    openid: state => state.openid,
 }

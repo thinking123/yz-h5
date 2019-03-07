@@ -2,61 +2,49 @@ import http from './axios'
 
 const HTTP_OK = '200';
 
-function parseRespond(res) {
-    const {status, msg, code} = res;
-
-    if (code && msg) {
-        throw new Error(msg);
+function parseRes(res, errMsg ='请求失败') {
+    if (!!res && res.status && res.status.indexOf('2') > -1) {
+        // return res.rows ? res.rows : res
+        return res.rows
     } else {
-        return res
+        const msg = res && res.message ? res.message : errMsg
+        throw new Error(msg ? msg : 'error')
     }
 }
 
-async function checkInvitationCode(params) {
-    const url = `/interface/checkInvitationCode`
-    return http.get(url, {params}).then(parseRespond)
-}
+export async function getSignInfo() {
 
+    let signUrl = ''
 
-async function register(params) {
-    const url = `/interface/register`
-    return http.get(url, {params}).then(parseRespond)
-}
+    signUrl = location.href.split('#')[0]  //hash后面的部分如果带上ios中config会不对
+    signUrl = encodeURIComponent(signUrl)
 
-export async function getLink(params = {}) {
-    const url = `/interface/getLink`
-    return http.get(url, {params}).then(parseRespond)
-}
-
-export async function checkPhone(params) {
-    const url = `/interface/checkPhone`
-    return http.get(url, {params}).then(parseRespond)
-}
-
-export async function checkOpenid(params) {
-    const url = `/interface/checkOpenid`
-    return http.get(url, {params}).then(parseRespond)
-}
-
-export async function getUser(params) {
-    const url = `/interface/getUser`
-    return http.get(url, {params}).then(parseRespond)
+    const url = `/api/signature?url=${signUrl}`
+    const data = {
+        url: signUrl
+    }
+    return http.post(url, {}, {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }).then(parseRes)
 }
 
 export async function uploadFile(formData) {
-    const url = `/interface/uploadImg`
+    const url = `/api/uploadImg`
     console.log('form data' , formData)
     return http.post(url, formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
             'Accept': 'text/plain'
         }
-    }).then(parseRespond)
+    }).then(parseRes)
 }
 
-export default {
-    checkInvitationCode,
-    register,
-    getLink,
-    getUser
+export function register(openId , city, userHeader, workYear) {
+    const url = '/api/login/wxlogin'
+    const data = {
+        openId , city, userHeader, workYear
+    }
+    return http.post(url, data).then(res => parseRes(res))
 }

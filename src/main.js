@@ -32,7 +32,10 @@ const router = new VueRouter({
 })
 
 router.beforeEach((pageTo, pageFrom, next) => {
-    if (pageTo.path === '/') {
+
+    let {openid} = pageTo.query
+    if(openid){
+        store.commit('setOpenid' , openid)
     }
     next()
 })
