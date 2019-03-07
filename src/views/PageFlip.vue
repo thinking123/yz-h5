@@ -102,6 +102,7 @@
     import Hammer from 'hammerjs'
     import { MessageBox } from 'mint-ui';
     // import Cropper from 'cropperjs'
+    import {getSignInfo} from "../utils/http";
     import {downLoadAllImg, loadImg , px , isIphone , isIphone6 , showMsg} from "../utils/common";
     import fixOrientation from 'fix-orientation'
     import {uploadFile , register} from "../utils/http";
@@ -483,6 +484,7 @@
             },
             async initShare() {
                 try {
+                    console.log('initShare')
                     const {
                         appid,
                         noncestr,
@@ -502,6 +504,7 @@
                     let link = window.location.href.split('#')[0]
 
 
+                    console.log('share link' , link)
                     await wx_config(appid, timestamp, noncestr, signature, jsApiList, imgUrl)
                     console.log('分享结束1')
                     await wx_appMessageShare(title, desc, link, imgUrl)

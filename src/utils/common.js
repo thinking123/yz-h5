@@ -183,7 +183,7 @@ export async function downLoadAllImg(urls, cb) {
     const imgs = Promise.all(proms)
     proms.forEach(p => p.then(() => {
         progress++
-        console.log('current progress', progress)
+        // console.log('current progress', progress)
         if (typeof cb === 'function') {
             cb(progress)
         }

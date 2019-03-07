@@ -1,4 +1,5 @@
-// const development = process.env.NODE_ENV == 'development'
+import('./vconsole').then(vc=>vc)
+const development = process.env.NODE_ENV == 'development'
 console.log(process.env.NODE_ENV)
 if (development) {
     console.log('import v console')
