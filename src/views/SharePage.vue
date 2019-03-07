@@ -45,6 +45,7 @@
             </span>
         </div>
 
+        <img :src="play" class="play" v-if="isFromShow" @click="handlePlay"/>
         <img :src="previewurl" v-if="preview" class="preview" @click="handleEndPreview"/>
     </div>
 </template>
@@ -88,17 +89,21 @@
                 previewurl:'',
                 w:'',
                 h:'',
-                ih:''
+                ih:'',
+                isFromShow:false
             }
         },
         computed: {
-            ...mapGetters(['images', 'head', 'url' , 'preview']),
+            ...mapGetters(['images', 'head', 'url' , 'preview' , 'openid']),
             items() {
                 const str = '邮储银行微工会2019女神节特别策划'
                 return str.split('')
             },
             qr() {
                 return `${this.url}yz-qr.png`
+            },
+            play() {
+                return `${this.url}yz-play-btn.png`
             },
             share() {
                 return `${this.url}yz-share-btn.png`
@@ -134,8 +139,13 @@
             }
         },
         methods: {
-            ...mapMutations(['setPreview' ,
+            ...mapMutations(['setPreview' , 'setOpenid', 'setHead',
             'setIsShare']),
+            handlePlay(){
+                this.$router.replace({
+                    name: 'page'
+                })
+            },
             handleEndPreview(){
                 this.setPreview(false)
             },
@@ -196,7 +206,7 @@
                     } = await getSignInfo(link)
                     const title = '今天，我为邮储女性代言'
                     const desc = '快来编写专属你的邮储女性“代言海报”'
-                    const imgUrl = `${this.url}yz-share-bg.jpg`
+                    const imgUrl = `${this.url}yz-share${this.type}-bg.png`
                     const jsApiList = [
                         'updateAppMessageShareData',
                         'updateTimelineShareData',
@@ -207,6 +217,8 @@
                     let link = window.location.href.split('#')[0]
 
 
+                    link = `${link}?#/share?type=${this.type}&openid=${this.openid}&city=${this.city}&year=${this.year}&head=${imgUrl}`
+                    console.log('link' , link)
                     await wx_config(appid, timestamp, noncestr, signature, jsApiList , imgUrl)
                     console.log('分享结束1')
                     await wx_appMessageShare(title, desc, link, imgUrl)
@@ -227,6 +239,13 @@
             document.removeEventListener('touchend' , this.handleTouchEnd)
         },
         mounted() {
+            const { openid , head , city , year} = this.$route.query
+            if(openid && head){
+                this.isFromShow = true
+                this.setOpenid(openid)
+                this.setHead(head)
+                //set head
+            }
             this.init()
             this.setIsShare(true)
 
@@ -234,8 +253,8 @@
             document.addEventListener('touchmove' , this.handleTouchMove)
             document.addEventListener('touchend' , this.handleTouchEnd)
             this.$nextTick(()=>{
-                console.log('this.$route.query', this.$route.query)
-                const {year, city} = this.$route.query
+                // console.log('this.$route.query', this.$route.query)
+                // const {year, city} = this.$route.query
 
                 this.year = year
                 console.log('year' , year)
@@ -467,6 +486,19 @@
             width: 100%;
             height: 100%;
             z-index: 20000;
+        }
+
+        .play{
+            left: 127*2px;
+
+            width: 95*2px;
+            height: 36*2px;
+            border-radius: 95*2px;
+            overflow: hidden;
+
+            position: absolute;
+            bottom: 6.6%;
+            z-index: 100;
         }
     }
 </style>

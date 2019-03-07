@@ -5,7 +5,7 @@ import './compatibility/flexible'
 // import './libs/crop'
 // import 'cropperjs'
 // import 'cropper'
-import './debug'
+// import './debug'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
@@ -33,8 +33,26 @@ const router = new VueRouter({
 
 router.beforeEach((pageTo, pageFrom, next) => {
 
+
+    let l = location;
+    let h = l.href
+    console.log('route 当前href' , h)
+    const reg = /[?].*[#]/
+    if(h.match(reg)){
+        let r = l.href.replace(reg , '#')
+
+        console.log('r' , r)
+        l.href = r
+        return
+
+    }
+
+
     let {openid} = pageTo.query
     console.log('pageTo' , pageTo , pageTo.query)
+
+
+
     if(openid){
         console.log('get openid' , openid)
         store.commit('setOpenid' , openid)
