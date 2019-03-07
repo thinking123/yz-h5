@@ -103,12 +103,19 @@
     import { MessageBox } from 'mint-ui';
     // import Cropper from 'cropperjs'
     import {downLoadAllImg, loadImg , px , isIphone , isIphone6 , showMsg} from "../utils/common";
+    import fixOrientation from 'fix-orientation'
     import {uploadFile , register} from "../utils/http";
     import {mapGetters, mapMutations} from 'vuex'
     import '../turn'
     import SwipeYear from "../components/SwipeYear";
     import NextButton from "../components/NextButton";
-
+    import {
+        wx_config,
+        wx_appMessageShare,
+        wx_timelineShare,
+        onMenuShareAppMessage,
+        onMenuShareTimeline
+    } from "../utils/wx-config";
     export default {
         name: "PageFlip",
         components: {NextButton, SwipeYear},
@@ -127,7 +134,15 @@
         },
         methods: {
             ...mapMutations(['setShowIndexLoadingBar', 'setLoadingProgress', 'setImages' , 'setHead','setIsShare' , 'images']),
+            async fixDirection(url) {
 
+                return new Promise((resolve, reject) => {
+                    fixOrientation(url, {image: true}, function (fixed, image) {
+                        resolve([fixed , image])
+                    });
+                })
+
+            },
             handleSelectedTen(selected){
                 this.ten = selected
               console.log("handleSelectedTen" , selected)
@@ -330,6 +345,7 @@
             },
             async init() {
                 try {
+                    await this.initShare()
                     if(this.images.length > 0){
                         return
                     }
@@ -464,6 +480,40 @@
             masktouch(e){
                 e.stopPropagation()
                 e.preventDefault()
+            },
+            async initShare() {
+                try {
+                    const {
+                        appid,
+                        noncestr,
+                        signature,
+                        timestamp
+                    } = await getSignInfo()
+                    const title = '今天，我为邮储女性代言'
+                    const desc = '快来编写专属你的邮储女性“代言海报”'
+                    const imgUrl = `${this.url}yz-share-bg.jpg`
+                    const jsApiList = [
+                        'updateAppMessageShareData',
+                        'updateTimelineShareData',
+                        //下面这两个api，虽然已经废弃，但是android必须调用，否则不能分享
+                        'onMenuShareAppMessage',
+                        'onMenuShareTimeline'
+                    ]
+                    let link = window.location.href.split('#')[0]
+
+
+                    await wx_config(appid, timestamp, noncestr, signature, jsApiList, imgUrl)
+                    console.log('分享结束1')
+                    await wx_appMessageShare(title, desc, link, imgUrl)
+                    console.log('分享结束2')
+                    await wx_timelineShare(title, link, imgUrl)
+                    console.log('分享结束3')
+                    onMenuShareTimeline(title, link, imgUrl)
+                    console.log('分享结束4')
+                    onMenuShareAppMessage(title, desc, link, imgUrl)
+                } catch (e) {
+                    console.log(e)
+                }
             }
         },
         data() {

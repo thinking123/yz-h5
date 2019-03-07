@@ -7,7 +7,7 @@ const postcss = px2rem({
 })
 
 module.exports = {
-    // productionSourceMap: false,
+    productionSourceMap: false,
     devServer: {
         proxy: 'http://psbc.ysmine.com/'
     },
