@@ -188,8 +188,8 @@
                         signature,
                         timestamp
                     } = await getSignInfo(link)
-                    const title = '我的音乐人格'
-                    const desc = '来测测你的音乐人格吧'
+                    const title = '今天，我为邮储女性代言'
+                    const desc = '快来编写专属你的邮储女性“代言海报”'
                     const imgUrl = `${this.url}yz-share-bg.png`
                     const jsApiList = [
                         'updateAppMessageShareData',
@@ -198,6 +198,8 @@
                         'onMenuShareAppMessage',
                         'onMenuShareTimeline'
                     ]
+                    let link = window.location.href.split('#')[0]
+
 
                     await wx_config(appid, timestamp, noncestr, signature, jsApiList , imgUrl)
                     console.log('分享结束1')
