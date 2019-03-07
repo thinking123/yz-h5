@@ -1,5 +1,7 @@
 <template>
     <div class="page-wrap" ref="pageWrap">
+        <div class="load-text">.</div>
+        <div class="touch-mask" v-if="showMask" @touchstart="masktouch"></div>
         <div class="bg" ref="bg">
 
         </div>
@@ -199,7 +201,7 @@
                     // this.returnUrlHead = await uploadFile(formData)
 
 
-                    this.clipDataBase64 = this.base64
+                    this.clipDataBase64 = base64
 
 
                     console.log(' this.clipDataBase64' ,  this.clipDataBase64)
@@ -342,9 +344,10 @@
                     console.error('init', e)
                 } finally {
                     this.setShowIndexLoadingBar(false)
-
+                    this.showMask = true
                     setTimeout(()=>{
                         $("#flipbook").turn('next')
+                        this.showMask = false
                     } , 1000)
 
                 }
@@ -370,7 +373,9 @@
                 const flipbook = this.$refs.flipbook
 
                 this.manager = new Hammer.Manager(flipbook);
-                const Swipe = new Hammer.Swipe();
+                const Swipe = new Hammer.Swipe({
+                    threshold:px(30)
+                });
                 this.manager.add(Swipe);
 
                 this.manager.on('swipe', function (e) {
@@ -451,6 +456,10 @@
                     }
 
                 })
+            },
+            masktouch(e){
+                e.stopPropagation()
+                e.preventDefault()
             }
         },
         data() {
@@ -464,7 +473,8 @@
                 clipDataBase64:'',
                 ten:0,
                 unit:0,
-                returnUrlHead:''
+                returnUrlHead:'',
+                showMask:false
             }
         },
         mounted() {
@@ -761,6 +771,24 @@
 
         .flipbook .shadow {
             box-shadow: 0 40px 100px black;
+        }
+
+        .touch-mask{
+            position: fixed;
+            left:0;
+            top:0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .load-text{
+            height: 1px;
+            width: 1px;
+            position: absolute;
+            top:-100%;
+            font-family: myfont2;
+            color:transparent;
+            background-color: transparent;
         }
     }
 </style>

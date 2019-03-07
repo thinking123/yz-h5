@@ -292,8 +292,8 @@
         },
         beforeRouteLeave(to, from, next) {
             this.setIsShare(false)
-            window.location.href = window.location.host
-            next()
+            // window.location.href = window.location.host
+            // next({ name: 'page' })
         }
     }
 </script>
