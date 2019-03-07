@@ -12,11 +12,17 @@ import Vuex from 'vuex'
 import App from './App.vue'
 import routes from './router'
 import store from './store'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+
 import './assets/css/index.css'
 // import 'weui'
 import Mint from 'mint-ui';
 import 'mint-ui/lib/style.css';
 
+Vue.use(VueAwesomeSwiper, {
+    direction: 'vertical', // 垂直切换选项
+    loop: true,
+})
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 

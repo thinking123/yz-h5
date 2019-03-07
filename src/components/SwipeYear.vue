@@ -1,11 +1,21 @@
 <template>
-    <div class="wrap" >
-        <div class="swipe-pre" @click="handlePre"/>
-        <div class='swipe-time-wrap' ref="swipe-wrap" >
+    <div class="swiper-year">
+        <div class="swipe-pre  swiper-button-prev " @click="pre"
+        ></div>
+        <swiper class="swipe-time-wrap " :options="swiperOption"   ref="mySwiper"
+                @slideChange="handleChange">
+            <swiper-slide class="swipe-time-wrap" v-for="(url, index) in urls" :key="index">
+                <div class="swipe-time-item ">
+                    <img :src="url.u" :class="url.cs"/>
+                </div>
+            </swiper-slide>
 
-        </div>
-        <div class="swipe-next" @click="handleNext"/>
+        </swiper>
+        <div class="swipe-next swiper-button-next"  @click="next"></div>
+
+
     </div>
+
 
 </template>
 
@@ -13,141 +23,86 @@
     import {mapGetters} from 'vuex'
     import {px} from "../utils/common";
     import Hammer from 'hammerjs'
+    // import Swiper from 'swiper'
+    import { swiper, swiperSlide } from 'vue-awesome-swiper'
     export default {
         name: "SwipeYear",
         computed: {
-            ...mapGetters(['images'])
-        },
-        methods: {
-            handlePre() {
-                const wrap = $(this.$refs['swipe-wrap'])
-                // const pre = this.active > 0 ? wrap.children().eq(this.active - 1) : null;
-                const cur = this.active >= 0 ? wrap.children().eq(this.active) : null;
-
-                const pre = $(cur).prev()
-                const next = $(cur).next()
-                // const next = this.active < wrap.children().length - 1 ? wrap.children().eq(this.active + 1) : null;
-
-                console.log('handlePre')
-                if (pre.length > 0) {
-                    this.active--
-                    this.$emit('selected', this.active)
-                    $(cur).removeClass('swipe-time-item-active').addClass('swipe-time-item-next')
-                    $(pre).removeClass('swipe-time-item-next').addClass('swipe-time-item-active')
-                    // next.removeClass('swipe-time-item-pre').addClass('swipe-time-item-active')
-                }
-            },
-            handleNext() {
-                console.log('handleNext')
-                const wrap = $(this.$refs['swipe-wrap'])
-                // const pre = this.active > 0 ? wrap.children().eq(this.active - 1) : null;
-                const cur = this.active >= 0 ? wrap.children().eq(this.active) : null;
-                // const next = this.active < wrap.children().length - 1 ? wrap.children().eq(this.active + 1) : null;
-                const pre = $(cur).prev()
-                const next = $(cur).next()
-                if (next.length > 0) {
-                    this.active++
-                    this.$emit('selected', this.active)
-                    $(next).removeClass('swipe-time-item-next').addClass('swipe-time-item-active')
-                    $(cur).removeClass('swipe-time-item-active').addClass('swipe-time-item-pre')
-                    // next.removeClass('swipe-time-item-pre').addClass('swipe-time-item-active')
-                }
+            ...mapGetters(['images' , 'url']),
+            swiper() {
+                return this.$refs.mySwiper.swiper
             }
         },
+        methods: {
+            handleChange(e){
+                this.$emit('selected',   this.$refs.mySwiper.swiper.activeIndex)
+
+            },
+            pre(){
+                this.swiper.slidePrev()
+            },
+            next(){
+                this.swiper.slideNext()
+            }
+        },
+        props: {
+            cls: {
+                type: String
+            },
+        },
         mounted(){
-            const flipbook = this.$refs['swipe-wrap']
 
-            this.manager = new Hammer.Manager(flipbook);
-            const Swipe = new Hammer.Swipe();
-            this.manager.add(Swipe);
-
-            this.manager.on('swipe', function (e) {
-                const direction = e.offsetDirection;
-
-                if (direction === 4) {
-
-                    console.log('swipe')
-                    // $("#flipbook").turn('previous')
-
-                    this.handlePre()
-                    // console.log('you swipe' , direction)
-                    // e.target.innerText =  deltaX;
-                    // e.target.style.transform = translate3d;
-                } else if (direction === 2) {
-                    console.log('swipe handleNext')
-
-            this.handleNext()
-                    // $("#flipbook").turn('next')
-                }
-            });
-
+            for(let i = 0 ; i< 10 ; i++){
+                const u = `${this.url}yz-num-${i}.png`
+                const cs = `swipe-time-image${i}`
+                this.urls.push({
+                    u,
+                    cs
+                })
+            }
         },
         data() {
             return {
-                active: 0
-            }
-        },
-        watch: {
-            images(v) {
-                if (v) {
-                    const items = v.filter(f => f.key.indexOf('num') > -1)
-                    const ref = this.$refs['swipe-wrap']
-                    if (ref) {
-                        let i = 0;
-                        items.forEach(item => {
+                active: 0,
+                urls:[],
+                swiperOption: {
+                    direction: 'vertical', // 垂直切换选项
+                    loop: true,
 
-                            const div = document.createElement("div");
-                            // div.style.width = '100%'
-                            // div.style.height = '100%'
-                            const img = item.image
-                            const key = item.key
-
-                            div.id = key
-
-                            $(div).addClass('swipe-time-item')
-                            if (key.indexOf('0') > -1) {
-                                $(div).addClass('swipe-time-item-active')
-                            } else {
-                                $(div).addClass('swipe-time-item-next')
-                            }
-
-                            const cls = `swipe-time-image${i}`
-                            $(img).addClass(cls)
-                            $(img).addClass('swipe-time-image')
-                            // const res =$(img).clone()
-                            $(img).clone(true).appendTo(div);
-                            ref.appendChild(div)
-                            // ref.appendChild(res)
-
-                            i += 1
-                        })
-
-
-                        this.active = 0
-                    }
                 }
             }
-        },
+        }
     }
 </script>
-<style>
+<style scoped>
 
+    .swiper-wrapper > div{
+        width: 100%;
+        /*height: 101px;*/
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
     .swipe-time-item {
         /*width: calpx(251-178);*/
         width: 100%;
         /*height: 101px;*/
         height: 100%;
 
-        position: absolute;
+        /*position: absolute;*/
         top:0;
         left: 0;
         transition: all 0.5s ease-in-out;
 
+        display: flex;
+        align-items: center;
+        justify-content: center;
         /*border:1px solid seagreen;*/
     }
 
     .swipe-time-item-pre {
-        transform: translateY(-100%);
+        /*transform: translateY(-100%);*/
     }
 
     .swipe-time-item-active {
@@ -155,7 +110,7 @@
     }
 
     .swipe-time-item-next {
-        transform: translateY(100%);
+        /*transform: translateY(100%);*/
     }
 
     .swipe-time-image{
@@ -207,39 +162,40 @@
 </style>
 <style scoped lang="scss">
 
-    .wrap {
+    .swiper-year {
         width: calpx(251-178);
         height: 150px;
         position: absolute;
         overflow: hidden;
-
         .swipe-pre {
-            position: absolute;
+            /*position: absolute;*/
             top: 0;
             left: 0;
             width: 100%;
             height: 27px;
             z-index: 1;
+            transform: translateY(-0%);
             /*border:1px solid red;*/
         }
 
         .swipe-next {
             width: 100%;
             height: 27px;
-            position: absolute;
+            /*position: absolute;*/
             bottom: 0;
             left: 0;
             z-index: 1;
+            transform: translateY(0%);
             /*border:1px solid red;*/
         }
 
         .swipe-time-wrap {
+            /*margin: 27px 0 ;*/
             height: 96px;
             width: 100%;
-            position: absolute;
+            /*position: absolute;*/
             overflow: hidden;
             top: 50%;
-            transform: translateY(-50%);
             /*border:1px solid saddlebrown;*/
         }
     }
