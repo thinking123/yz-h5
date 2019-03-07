@@ -40,10 +40,10 @@ export async function uploadFile(formData) {
     return http.post(url, formData, {headers}).then(parseRes)
 }
 
-export function register(openId , city, userHeader, workYear) {
-    const url = '/api/login/wxlogin'
+export function register(openId , city, workYear) {
+    const url = '/api/'
     const data = {
-        openId , city, userHeader, workYear
+        openId , city,  workYear
     }
     return http.post(url, data).then(res => parseRes(res))
 }

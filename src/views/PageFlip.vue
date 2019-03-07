@@ -172,6 +172,7 @@
             },
             base64ToFile(dataurl ){
                 const filename = this.$refs.file.files[0].name
+                console.log('filename' , filename)
                 var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
                     bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
                 while(n--){
@@ -192,15 +193,17 @@
                     const base64 = result.toDataURL()
                     const uploadImg = this.base64ToFile(base64)
 
-                    const formData = new FormData();
-                    formData.append("file", uploadImg)
-                    this.returnUrlHead = await uploadFile(formData)
+                    // console.log('base64' , base64)
+                    // const formData = new FormData();
+                    // formData.append("file", uploadImg)
+                    // this.returnUrlHead = await uploadFile(formData)
 
 
-                    this.clipDataBase64 = this.returnUrlHead
+                    this.clipDataBase64 = this.base64
 
 
                     console.log(' this.clipDataBase64' ,  this.clipDataBase64)
+
                     // $image.cropper('clear')
 
 
@@ -299,14 +302,15 @@
                         // return  $.alert("输入城市");
                         return    this.showMsg("输入城市")
                     }
-
-
-                    await register(this.openid , this.inputCity , this.returnUrlHead , year)
+                    //
+                    // //
+                    await register(this.openid , this.inputCity ,  year)
 
                     this.setHead(this.clipDataBase64)
                     this.setIsShare(true)
                     // $('#flipbook').turn('destroy').remove()
-                    this.$router.push({
+                    //使用replace避免ios下面出现导航栏，遮挡内容
+                    this.$router.replace({
                         name: 'share',
                         query: {
                             year: year,

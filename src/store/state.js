@@ -4,6 +4,7 @@ export default {
     openid: 'oGJAbuJ5cC0ZhchP8Icgl_6-4-IY',
     images: null,
     loading:false,
+    // url:'http://pnx7zyyrl.bkt.clouddn.com/',
     url:'http://pnx7zyyrl.bkt.clouddn.com/',
     showIndexLoadingBar:false,
     loadingProgress:'',

@@ -18,9 +18,9 @@
             我为邮储女性代言。
         </div>
         <img :src="qr" class="qr"/>
-        <div class="share"  v-if="!preview">
-            <img :src="share"/>
-        </div>
+        <!--<div class="share"  v-if="!preview">-->
+            <!--<img :src="share"/>-->
+        <!--</div>-->
 
         <div class="head-wrap" :style="hStyle">
             <img class="head-wrap-img" :src="headWrap"
@@ -75,6 +75,8 @@
 
     import {mapGetters , mapMutations} from 'vuex'
     import html2canvas from 'html2canvas';
+
+    import {px} from "../utils/common";
     import {getSignInfo} from "../utils/http";
     import {wx_config , wx_appMessageShare , wx_timelineShare , onMenuShareAppMessage , onMenuShareTimeline} from "../utils/wx-config";
 
@@ -121,6 +123,8 @@
                 return {
                     width:this.w + 'px',
                     height:this.h + 'px',
+                    left:this.left + 'px',
+                    top:this.top + 'px',
                 }
             },
             ihStyle(){
@@ -235,13 +239,40 @@
             }
 
             const ph = 259/667 , wh = window.innerHeight - 64
-            console.log('wh' , wh)
-            const h = ph * wh
-            const w = 272/259 * h
-            const ih = 245/667 * wh
+
+            const oh = (71 + 259/2)/667
+            const ow = (89 + 272/2)/375
+            let wpx = px(272)
+            let hpx = px(259)
+            let w , h , ih
+            let pw = wpx / wh
+
+            let np = hpx / wh
+            if(np > ph){
+                //height比例过大
+                h = ph * wh
+                w = 272/259 * h
+                ih = 0.946 * h
+            }else{
+                //不用调整
+                h = hpx
+                w = wpx
+                ih = 0.946 * h
+            }
+
+            let top = oh * wh - h /2
+            let left = ow * window.innerWidth - w/2
+
+
+            // console.log('wh' , wh)
+            //  h = ph * wh
+            //  w = 272/259 * h
+            // const ih = 0.946 * h
             this.h = h
             this.w = w
             this.ih = ih
+            this.top = top
+            this.left = left
             // const key = `share${this.type}-bg`
             // const {image} = this.images.find(f => f.key == key)
             // image.style.width = '100%'
