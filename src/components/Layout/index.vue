@@ -52,7 +52,7 @@
         }
 
         .footer{
-            position: absolute;
+            position: fixed;
             /*bottom:4.5%;*/
             top:96.7%;
             left: 50%;
