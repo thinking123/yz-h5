@@ -790,7 +790,7 @@
             width: 1px;
             position: absolute;
             top:-100%;
-            font-family: myfont2;
+            /*font-family: myfont2;*/
             color:transparent;
             background-color: transparent;
         }

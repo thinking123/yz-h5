@@ -1,17 +1,15 @@
 <template>
-    <div ref="wrap" class="wrap" id="share-wrap"      @touchstart="handleTouchStart"
-         @touchmove="handleTouchMove"
-         @touchend="handleTouchEnd">
+    <div ref="wrap" class="wrap" id="share-wrap"     >
         <img :src="bg" class="bg"
         />
         <div class="line line1" :class="cls">
             这是我工作的第<span>
                 {{year}}
-            </span>年
+            </span>年，
         </div>
         <div class="line line2" :class="cls">
             我在<span>
-                {{city}}
+                {{city}}，
             </span>
         </div>
         <div class="line line3" :class="cls">
@@ -143,7 +141,7 @@
             },
             handleTouchStart(e){
                 if(this.preview){
-
+                    console.log('handleTouchStart preview')
                 }else{
                     e.preventDefault()
 
@@ -151,7 +149,8 @@
                     clearTimeout(this.timeOutEvent);
                     // 开启延时定时器
                     this.timeOutEvent = setTimeout(()=> {
-                        console.log("longpress")
+                        console.log("longpress start saveImage")
+                        // alert('longpress')
                         this.saveImage()
                     }, 300);
                 }
@@ -159,23 +158,21 @@
                 // return false
             },
             handleTouchMove(){
-                // console.log("clearTimeout")
-                // alert('clearTimeout')
-                clearTimeout(this.timeOutEvent);
+                console.log("handleTouchMove clearTimeout")
+                // alert('handleTouchMove clearTimeout')
+                // clearTimeout(this.timeOutEvent);
             },
             handleTouchEnd(){
-                // console.log("clearTimeout")
-                // alert('clearTimeout')
+                console.log("handleTouchEnd clearTimeout")
+                // alert('handleTouchEnd clearTimeout')
                 clearTimeout(this.timeOutEvent);
             },
             saveImage() {
                 const that = this
                 this.setPreview(true)
-                const body = $(document.body)
-                const dest = body.clone()
-                dest.width(body.width() + "px");
-                dest.height(body.height() + "px");
-                html2canvas(dest , {
+
+                const dest = this.$refs['share-wrap']
+                html2canvas(document.body , {
                     letterRendering: 1, useCORS: true,
                 }).then(canvas => {
                     // document.body.appendChild(canvas);
@@ -185,7 +182,8 @@
                     // alert('preview')
                 }).catch(err=>{
                     this.setPreview(false)
-                    console.error('error screen shot')
+                    console.log('error screen shot')
+                    // alert('screen errror')
                 });
             },
             async init(){
@@ -223,11 +221,19 @@
                 }
             }
         },
+        beforeDestroy(){
+            document.removeEventListener('touchstart' , this.handleTouchStart)
+            document.removeEventListener('touchmove' , this.handleTouchMove)
+            document.removeEventListener('touchend' , this.handleTouchEnd)
+        },
         mounted() {
             this.init()
             this.setIsShare(true)
 
-            $this.nextTick(()=>{
+            document.addEventListener('touchstart' , this.handleTouchStart)
+            document.addEventListener('touchmove' , this.handleTouchMove)
+            document.addEventListener('touchend' , this.handleTouchEnd)
+            this.$nextTick(()=>{
                 console.log('this.$route.query', this.$route.query)
                 const {year, city} = this.$route.query
 
@@ -430,7 +436,7 @@
             font-size: 18px;
             left: 32px;
             position: absolute;
-            font-family: myfont2;
+            /*font-family: myfont2;*/
         }
 
         .line1 {
