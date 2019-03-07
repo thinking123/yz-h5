@@ -171,7 +171,11 @@
             saveImage() {
                 const that = this
                 this.setPreview(true)
-                html2canvas(document.body , {
+                const body = $(document.body)
+                const dest = body.clone()
+                dest.width(body.width() + "px");
+                dest.height(body.height() + "px");
+                html2canvas(dest , {
                     letterRendering: 1, useCORS: true,
                 }).then(canvas => {
                     // document.body.appendChild(canvas);
@@ -335,7 +339,7 @@
                 /*margin: 1px 0;*/
                 display: block;
                 text-align: center;
-                margin: -3px 0;
+                margin: -1.5px 0;
             }
         }
 

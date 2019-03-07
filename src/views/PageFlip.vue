@@ -672,7 +672,7 @@
 
             .page6-photo {
                 position: absolute;
-                top: 45.43%;
+                top: 46.33%;
                 left: #{106-43}px;
                 height: calpx(435-303);
                 width: calpx(272-106);
