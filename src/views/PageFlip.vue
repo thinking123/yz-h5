@@ -99,7 +99,8 @@
     import Hammer from 'hammerjs'
     import { MessageBox } from 'mint-ui';
     // import Cropper from 'cropperjs'
-    import {downLoadAllImg, loadImg , px , isIphone , isIphone6} from "../utils/common";
+    import {downLoadAllImg, loadImg , px , isIphone , isIphone6 , showMsg} from "../utils/common";
+    import {uploadFile , register} from "../utils/http";
     import {mapGetters, mapMutations} from 'vuex'
     import '../turn'
     import SwipeYear from "../components/SwipeYear";
@@ -109,7 +110,7 @@
         name: "PageFlip",
         components: {NextButton, SwipeYear},
         computed: {
-            ...mapGetters(['url', 'keys']),
+            ...mapGetters(['url', 'keys','openid']),
             bg() {
                 return `${this.url}yz-bg.png`;
             },
@@ -169,18 +170,35 @@
 
 
             },
-            handleOk(){
+            base64ToFile(dataurl ){
+                const filename = this.$refs.file.files[0].name
+                var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+                while(n--){
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+                return new File([u8arr], filename, {type:mime});
+            },
+           async handleOk(){
 
-                const $image = $(document.getElementById('clipImage'))
-                var result = $image.cropper('getCroppedCanvas', {
-                    width: 1280,
-                    height: 1280
-                });
-                this.clipDataBase64 = result.toDataURL()
+                try {
+                    const $image = $(document.getElementById('clipImage'))
+                    var result = $image.cropper('getCroppedCanvas', {
+                        width: 1280,
+                        height: 1280
+                    });
+                    this.clipDataBase64 = result.toDataURL()
 
-                console.log(' this.clipDataBase64' ,  this.clipDataBase64)
 
-                this.showClip = false
+                    console.log(' this.clipDataBase64' ,  this.clipDataBase64)
+
+                    this.showClip = false
+                    const uploadImg = this.base64ToFile(this.clipDataBase64)
+                    this.returnUrlHead = uploadFile(uploadImg)
+                }catch (e) {
+                    showMsg(e)
+                }
+
             },
             edit(){
                 // var winW = 5.6 * 37.5;
@@ -238,6 +256,7 @@
 
                 } catch (e) {
                     console.error('clip', e)
+
                 }
             },
             showMsg(msg){
@@ -246,35 +265,43 @@
                     message: msg
                 });
             },
-            handleCreate() {
+            async handleCreate() {
 
 
-                const reg = /^\d{2}$/
-                const year = (this.ten == 0 ? '' : this.ten) + '' + this.unit
+                try {
+                    const reg = /^\d{2}$/
+                    const year = (this.ten == 0 ? '' : this.ten) + '' + this.unit
 
-                if(year == 0){
-                    // return  $.alert("选择年份");
-                    return    this.showMsg("选择年份")
-                }
-                if(!this.clipDataBase64){
-                    // return  $.alert("选择照片");
-                    return    this.showMsg("选择照片")
-                }
-                if( !this.inputCity || !this.inputCity.trim()){
-                    // return  $.alert("输入城市");
-                    return    this.showMsg("输入城市")
-                }
-
-                this.setHead(this.clipDataBase64)
-                this.setIsShare(true)
-                $('#flipbook').turn('destroy').remove()
-                this.$router.push({
-                    name: 'share',
-                    query: {
-                        year: year,
-                        city:this.inputCity
+                    if(year == 0){
+                        // return  $.alert("选择年份");
+                        return    this.showMsg("选择年份")
                     }
-                })
+                    if(!this.clipDataBase64){
+                        // return  $.alert("选择照片");
+                        return    this.showMsg("选择照片")
+                    }
+                    if( !this.inputCity || !this.inputCity.trim()){
+                        // return  $.alert("输入城市");
+                        return    this.showMsg("输入城市")
+                    }
+
+
+                    await register(this.openid , this.inputCity , this.returnUrlHead , year)
+
+                    this.setHead(this.clipDataBase64)
+                    this.setIsShare(true)
+                    // $('#flipbook').turn('destroy').remove()
+                    this.$router.push({
+                        name: 'share',
+                        query: {
+                            year: year,
+                            city:this.inputCity
+                        }
+                    })
+                }catch (e) {
+                    showMsg(e)
+                }
+
             },
             async init() {
                 try {
@@ -417,7 +444,8 @@
                 imgPhoto:'',
                 clipDataBase64:'',
                 ten:0,
-                unit:0
+                unit:0,
+                returnUrlHead:''
             }
         },
         mounted() {

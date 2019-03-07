@@ -75,6 +75,9 @@
 
     import {mapGetters , mapMutations} from 'vuex'
     import html2canvas from 'html2canvas';
+    import {getSignInfo} from "../utils/http";
+    import {wx_config , wx_appMessageShare , wx_timelineShare , onMenuShareAppMessage , onMenuShareTimeline} from "../utils/wx-config";
+
     export default {
         name: "SharePage",
         data() {
@@ -176,9 +179,42 @@
                     this.setPreview(false)
                     console.error('error screen shot')
                 });
+            },
+            async init(){
+                try {
+                    const {
+                        appid,
+                        noncestr,
+                        signature,
+                        timestamp
+                    } = await getSignInfo(link)
+                    const title = '我的音乐人格'
+                    const desc = '来测测你的音乐人格吧'
+                    const imgUrl = `${this.url}yz-share-bg.png`
+                    const jsApiList = [
+                        'updateAppMessageShareData',
+                        'updateTimelineShareData',
+                        //下面这两个api，虽然已经废弃，但是android必须调用，否则不能分享
+                        'onMenuShareAppMessage',
+                        'onMenuShareTimeline'
+                    ]
+
+                    await wx_config(appid, timestamp, noncestr, signature, jsApiList , imgUrl)
+                    console.log('分享结束1')
+                    await wx_appMessageShare(title, desc, link, imgUrl)
+                    console.log('分享结束2')
+                    await wx_timelineShare(title, link, imgUrl)
+                    console.log('分享结束3')
+                    onMenuShareTimeline(title, link, imgUrl)
+                    console.log('分享结束4')
+                    onMenuShareAppMessage(title, desc, link, imgUrl)
+                }catch (e) {
+                    console.log(e)
+                }
             }
         },
         mounted() {
+            this.init()
             this.setIsShare(true)
             console.log('this.$route.query', this.$route.query)
             const {year, city} = this.$route.query
