@@ -1,5 +1,7 @@
 <template>
     <div ref="wrap" class="wrap" id="share-wrap"     >
+
+        <move-arrow  class="arrow"/>
         <img :src="bg" class="bg"
         />
         <div class="line line1" :class="cls">
@@ -29,7 +31,7 @@
 
         </div>
         <div class='tip'>
-            长按保存图片
+            截图保存海报
         </div>
         <div class='qr-tip'>
             <div>
@@ -45,7 +47,7 @@
             </span>
         </div>
 
-        <img :src="play" class="play" v-if="isFromShow" @click="handlePlay"/>
+        <!--<img :src="play" class="play"  @touchstart="handlePlay" v-if="isFromShow"/>-->
         <img :src="previewurl" v-if="preview" class="preview" @click="handleEndPreview"/>
     </div>
 </template>
@@ -78,9 +80,11 @@
     import {px} from "../utils/common";
     import {getSignInfo} from "../utils/http";
     import {wx_config , wx_appMessageShare , wx_timelineShare , onMenuShareAppMessage , onMenuShareTimeline} from "../utils/wx-config";
+    import MoveArrow from "../components/MoveArrow";
 
     export default {
         name: "SharePage",
+        components: {MoveArrow},
         data() {
             return {
                 type: 1,
@@ -142,14 +146,19 @@
             ...mapMutations(['setPreview' , 'setOpenid', 'setHead',
             'setIsShare']),
             handlePlay(){
+                console.log('goto home')
                 this.$router.replace({
                     name: 'page'
                 })
+
             },
             handleEndPreview(){
                 this.setPreview(false)
             },
             handleTouchStart(e){
+
+
+                return
                 if(this.preview){
                     console.log('handleTouchStart preview')
                 }else{
@@ -196,17 +205,18 @@
                     // alert('screen errror')
                 });
             },
-            async init(){
+            async init() {
                 try {
+                    console.log('initShare')
                     const {
                         appid,
                         noncestr,
                         signature,
                         timestamp
-                    } = await getSignInfo(link)
+                    } = await getSignInfo()
                     const title = '今天，我为邮储女性代言'
                     const desc = '快来编写专属你的邮储女性“代言海报”'
-                    const imgUrl = `${this.url}yz-share${this.type}-bg.png`
+                    const imgUrl = `${this.url}yz-share-bg.jpg`
                     const jsApiList = [
                         'updateAppMessageShareData',
                         'updateTimelineShareData',
@@ -217,9 +227,8 @@
                     let link = window.location.href.split('#')[0]
 
 
-                    link = `${link}?#/share?type=${this.type}&openid=${this.openid}&city=${this.city}&year=${this.year}&head=${imgUrl}`
-                    console.log('link' , link)
-                    await wx_config(appid, timestamp, noncestr, signature, jsApiList , imgUrl)
+                    console.log('share link' , link)
+                    await wx_config(appid, timestamp, noncestr, signature, jsApiList, imgUrl)
                     console.log('分享结束1')
                     await wx_appMessageShare(title, desc, link, imgUrl)
                     console.log('分享结束2')
@@ -228,83 +237,140 @@
                     onMenuShareTimeline(title, link, imgUrl)
                     console.log('分享结束4')
                     onMenuShareAppMessage(title, desc, link, imgUrl)
-                }catch (e) {
-                    console.log(e)
+                } catch (e) {
+                    console.error(e)
                 }
             }
+            // async init(){
+            //     try {
+            //         const {
+            //             appid,
+            //             noncestr,
+            //             signature,
+            //             timestamp
+            //         } = await getSignInfo(link)
+            //         const title = '今天，我为邮储女性代言'
+            //         const desc = '快来编写专属你的邮储女性“代言海报”'
+            //         const imgUrl = `${this.url}yz-share${this.type}-bg.png`
+            //         const jsApiList = [
+            //             'updateAppMessageShareData',
+            //             'updateTimelineShareData',
+            //             //下面这两个api，虽然已经废弃，但是android必须调用，否则不能分享
+            //             'onMenuShareAppMessage',
+            //             'onMenuShareTimeline'
+            //         ]
+            //
+            //
+            //         console.log('imgurl' , imgUrl)
+            //         let link = window.location.href.split('#')[0]
+            //
+            //
+            //         let u = this.head.split('com/')[1]
+            //         u = u.split('.')[0]
+            //         link = `${link}?#/share?openid=${this.openid}&city=${encodeURI(this.city)}&year=${this.year}&head=${u}`
+            //         console.log('link' , link)
+            //         await wx_config(appid, timestamp, noncestr, signature, jsApiList , imgUrl)
+            //         console.log('分享结束1')
+            //         await wx_appMessageShare(title, desc, link, imgUrl)
+            //         console.log('分享结束2')
+            //         await wx_timelineShare(title, link, imgUrl)
+            //         console.log('分享结束3')
+            //         onMenuShareTimeline(title, link, imgUrl)
+            //         console.log('分享结束4')
+            //         onMenuShareAppMessage(title, desc, link, imgUrl)
+            //     }catch (e) {
+            //         console.log(e)
+            //     }
+            // }
         },
         beforeDestroy(){
-            document.removeEventListener('touchstart' , this.handleTouchStart)
-            document.removeEventListener('touchmove' , this.handleTouchMove)
-            document.removeEventListener('touchend' , this.handleTouchEnd)
+            // document.removeEventListener('touchstart' , this.handleTouchStart)
+            // document.removeEventListener('touchmove' , this.handleTouchMove)
+            // document.removeEventListener('touchend' , this.handleTouchEnd)
         },
         mounted() {
-            const { openid , head , city , year} = this.$route.query
-            if(openid && head){
-                this.isFromShow = true
-                this.setOpenid(openid)
-                this.setHead(head)
-                //set head
+            let { city , year} = this.$route.query
+            // if(openid && head){
+            //     head = decodeURI(head)
+            //     head = `https://cdnpepsi.ysmine.com/${head}.png`
+            //     city=decodeURI(city)
+            //     this.isFromShow = true
+            //     this.setOpenid(openid)
+            //     this.setHead(head)
+            //     //set head
+            // }
+            this.year = year
+            console.log('year' , year)
+            this.city = city
+            if (year <= 5) {
+                this.type = 1
+            } else if (year <= 10) {
+                this.type = 2
+            } else if (year <= 20) {
+                this.type = 3
+            } else {
+                this.type = 4
             }
+
+
             this.init()
             this.setIsShare(true)
 
-            document.addEventListener('touchstart' , this.handleTouchStart)
-            document.addEventListener('touchmove' , this.handleTouchMove)
-            document.addEventListener('touchend' , this.handleTouchEnd)
-            this.$nextTick(()=>{
-                // console.log('this.$route.query', this.$route.query)
-                // const {year, city} = this.$route.query
+            // document.addEventListener('touchstart' , this.handleTouchStart)
+            // document.addEventListener('touchmove' , this.handleTouchMove)
+            // document.addEventListener('touchend' , this.handleTouchEnd)
 
-                this.year = year
-                console.log('year' , year)
-                this.city = city
-                if (year <= 5) {
-                    this.type = 1
-                } else if (year <= 10) {
-                    this.type = 2
-                } else if (year <= 20) {
-                    this.type = 3
-                } else {
-                    this.type = 4
-                }
-
-                const ph = 259/667 , wh = window.innerHeight - 64
-
-                const oh = (71 + 259/2)/667
-                const ow = (89 + 272/2)/375
-                let wpx = px(272)
-                let hpx = px(259)
-                let w , h , ih
-                let pw = wpx / wh
-
-                let np = hpx / wh
-                if(np > ph){
-                    //height比例过大
-                    h = ph * wh
-                    w = 272/259 * h
-                    ih = 0.946 * h
-                }else{
-                    //不用调整
-                    h = hpx
-                    w = wpx
-                    ih = 0.946 * h
-                }
-
-                let top = oh * wh - h /2
-                let left = ow * window.innerWidth - w/2
+            setTimeout(()=>{
+                this.$nextTick(()=>{
+                    // console.log('this.$route.query', this.$route.query)
+                    // const {year, city} = this.$route.query
 
 
-                // console.log('wh' , wh)
-                //  h = ph * wh
-                //  w = 272/259 * h
-                // const ih = 0.946 * h
-                this.h = h
-                this.w = w
-                this.ih = ih
-                this.top = top
-                this.left = left
-            })
+
+                    const ph = 259/667 , wh = window.innerHeight - 64
+
+                    const oh = (71 + 259/2)/667
+                    const ow = (89 + 272/2)/375
+                    let wpx = px(272)
+                    let hpx = px(259)
+                    let w , h , ih
+                    let pw = wpx / wh
+
+                    let np = hpx / wh
+                    if(np > ph){
+                        //height比例过大
+                        h = ph * wh
+                        w = 272/259 * h
+                        ih = 0.946 * h
+                    }else{
+                        //不用调整
+                        h = hpx
+                        w = wpx
+                        ih = 0.946 * h
+                    }
+
+                    // if(w/px(375) < 0.5){
+                    //     w = wpx;
+                    //     h = hpx;
+                    //     ih = 0.946 * h
+                    // }
+
+                    let top = oh * wh - h /2
+                    let left = ow * window.innerWidth - w/2
+
+
+                    // console.log('wh' , wh)
+                    //  h = ph * wh
+                    //  w = 272/259 * h
+                    // const ih = 0.946 * h
+                    this.h = h
+                    this.w = w
+                    this.ih = ih
+                    this.top = top
+                    this.left = left
+                })
+            } , 300)
+
 
             // const key = `share${this.type}-bg`
             // const {image} = this.images.find(f => f.key == key)
@@ -327,6 +393,7 @@
             this.setIsShare(false)
             // window.location.href = window.location.host
             // next({ name: 'page' })
+            next()
         }
     }
 </script>
@@ -334,6 +401,13 @@
 
 </style>
 <style scoped lang="scss">
+    .arrow {
+
+        top: 16px;
+        right: 16px;
+
+    }
+
     .wrap {
         width: 100%;
         height: 100%;
@@ -489,11 +563,10 @@
         }
 
         .play{
-            left: 127*2px;
-
-            width: 95*2px;
-            height: 36*2px;
-            border-radius: 95*2px;
+            right: 20px;
+            width: 95px;
+            height: 36px;
+            border-radius: 95px;
             overflow: hidden;
 
             position: absolute;

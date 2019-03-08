@@ -134,7 +134,7 @@
             }
         },
         methods: {
-            ...mapMutations(['setShowIndexLoadingBar', 'setLoadingProgress', 'setImages' , 'setHead','setIsShare' , 'images']),
+            ...mapMutations(['setShowIndexLoadingBar', 'setLoadingProgress', 'setImages' , 'setHead','setIsShare' , 'images','CHANGE_LOADING_BAR','setIsPlaying']),
             async fixDirection(url) {
 
                 return new Promise((resolve, reject) => {
@@ -171,6 +171,33 @@
                     const register = this.$refs.pageWrap
                     $(register).height(this.bodyHeight);
                 }
+            },
+            base64ToFile1(dataurl){
+
+                var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+                while (n--) {
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+                return new Blob([u8arr], { type: mime })
+
+
+                // var byteString;
+                // if (dataURI.split(',')[0].indexOf('base64') >= 0)
+                //     byteString = atob(dataURI.split(',')[1]);
+                // else
+                //     byteString = unescape(dataURI.split(',')[1]);
+                //
+                // // separate out the mime component
+                // var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+                //
+                // // write the bytes of the string to a typed array
+                // var ia = new Uint8Array(byteString.length);
+                // for (var i = 0; i < byteString.length; i++) {
+                //     ia[i] = byteString.charCodeAt(i);
+                // }
+                //
+                // return new Blob([ia], {type:mimeString});
             },
             scrollToForIphone6() {
                 if (isIphone()) {
@@ -210,11 +237,17 @@
 
                     this.showClip = false
                     const base64 = result.toDataURL()
-                    const uploadImg = this.base64ToFile(base64)
+                    // const uploadImg = this.base64ToFile(base64)
+
+
+                    // const blob  = this.base64ToFile(base64)
+                    // const formData = new FormData();
+                    // console.log('blob' , blob.size)
+                    // formData.append("file", blob)
+                    // this.returnUrlHead = await uploadFile(formData)
 
                     // console.log('base64' , base64)
-                    // const formData = new FormData();
-                    // formData.append("file", uploadImg)
+
                     // this.returnUrlHead = await uploadFile(formData)
 
 
@@ -278,6 +311,10 @@
                         canvas: true
                     };
 
+                    // const formData = new FormData();
+                    // formData.append("file", file)
+                    // this.returnUrlHead = await uploadFile(formData)
+
                     const that = this
                     loadImage.parseMetaData(file, function (data) {
                         if (data.exif) {
@@ -326,28 +363,35 @@
 
                     $('#input-city').blur()
 
+                    this.CHANGE_LOADING_BAR(true)
                     await register(this.openid , this.inputCity ,  year)
-
+                    this.CHANGE_LOADING_BAR(false)
                     this.setHead(this.clipDataBase64)
                     this.setIsShare(true)
                     // $('#flipbook').turn('destroy').remove()
                     //使用replace避免ios下面出现导航栏，遮挡内容
-                    this.$router.replace({
-                        name: 'share',
-                        query: {
-                            year: year,
-                            city:this.inputCity
-                        }
-                    })
+                    setTimeout(()=>{
+                        this.$router.replace({
+                            name: 'share',
+                            query: {
+                                year: year,
+                                city:this.inputCity
+                            }
+                        })
+                    } , 500)
+
                 }catch (e) {
+                    this.CHANGE_LOADING_BAR(false)
                     showMsg(e)
                 }
 
             },
             async init() {
                 try {
-                    await this.initShare()
+                    this.setShowIndexLoadingBar(true)
+                    // await this.initShare()
                     if(this.images.length > 0){
+                        console.log('len' ,this.images.length  )
                         return
                     }
                     const urls = this.keys.map(key => `${this.url}${key}.png`)
@@ -361,10 +405,16 @@
 
                     this.initImage(images)
                     this.initBook()
+
+                    this.setShowIndexLoadingBar(false)
+
+                    await this.initShare()
                 } catch (e) {
+                    this.setShowIndexLoadingBar(false)
                     console.error('init', e)
                 } finally {
-                    this.setShowIndexLoadingBar(false)
+
+
                     this.showMask = true
                     setTimeout(()=>{
                         $("#flipbook").turn('next')
@@ -507,15 +557,15 @@
                     console.log('share link' , link)
                     await wx_config(appid, timestamp, noncestr, signature, jsApiList, imgUrl)
                     console.log('分享结束1')
-                    await wx_appMessageShare(title, desc, link, imgUrl)
+                     wx_appMessageShare(title, desc, link, imgUrl)
                     console.log('分享结束2')
-                    await wx_timelineShare(title, link, imgUrl)
+                     wx_timelineShare(title, link, imgUrl)
                     console.log('分享结束3')
                     onMenuShareTimeline(title, link, imgUrl)
                     console.log('分享结束4')
                     onMenuShareAppMessage(title, desc, link, imgUrl)
                 } catch (e) {
-                    console.log(e)
+                    console.error(e)
                 }
             }
         },

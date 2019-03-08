@@ -11,7 +11,7 @@ axios.interceptors.request.use(
         // timer.push(setTimeout(() => {
         //     store.commit('CHANGE_LOADING_BAR', true)
         // }, 100))
-        store.commit('CHANGE_LOADING_BAR', true)
+        // store.commit('CHANGE_LOADING_BAR', true)
         config.headers['token'] =store.state.openid
 
         console.log('request' , config)
@@ -19,21 +19,21 @@ axios.interceptors.request.use(
     },
     err => {
         // clearTimeout(timer.splice(0, 1))
-        store.commit('CHANGE_LOADING_BAR', false)
+        // store.commit('CHANGE_LOADING_BAR', false)
         return Promise.reject(err);
     });
 
 axios.interceptors.response.use(
     response => {
         // clearTimeout(timer.splice(0, 1))
-        store.commit('CHANGE_LOADING_BAR', false)
+        // store.commit('CHANGE_LOADING_BAR', false)
 
         return response.data
     },
     error => {
         // clearTimeout(timer.splice(0, 1))
         // console.log("网络异常")
-        store.commit('CHANGE_LOADING_BAR', false)
+        // store.commit('CHANGE_LOADING_BAR', false)
         return Promise.reject(error.response && error.response.data)
     });
 

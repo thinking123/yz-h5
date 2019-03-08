@@ -2,7 +2,7 @@
     <div class="layout">
         <index-loading-bar/>
         <loading-bar/>
-        <music-bar class="music-bar"  :class="{'top':!isShare}"/>
+        <music-bar class="music-bar"  :class="{'top':!isShare}" />
         <router-view></router-view>
         <div class="footer" v-if="!isShare">
             邮储银行微工会特别呈现
@@ -19,7 +19,7 @@
         name: "Layout",
         components: {LoadingBar, MusicBar, IndexLoadingBar},
         computed: {
-            ...mapGetters(['isShare' ]),
+            ...mapGetters(['isShare' ,'showIndexLoadingBar']),
             musUrl(){
                 return `${this.url}yz-music.mp3`
             },
@@ -41,7 +41,7 @@
 
         .music-bar{
             position: absolute;
-            top:26px;
+            top:76px;
             left: 333px;
             z-index: 3000;
 

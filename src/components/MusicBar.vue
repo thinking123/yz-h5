@@ -2,7 +2,7 @@
     <div ref="wrap" class="wrap" @click="handleMusic"
 
          v-show="!preview">
-        <audio ref="music" loop="loop"  >
+        <audio ref="music" loop="loop"   preload="metadata">
             <source :src="musUrl" type="audio/mpeg" >
         </audio>
         <img :src="musicIcon" class="icon" ref="img"/>

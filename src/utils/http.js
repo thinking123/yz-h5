@@ -34,11 +34,13 @@ export async function uploadFile(formData) {
     const url = `/api/uploadImg`
     console.log('form data' , formData)
     const headers =  {
-        'Content-Type': 'multipart/form-data',
-        'Accept': 'text/plain'
+        //只能使用这个header
+        'Content-Type': 'multipart/form-data'
     }
     return http.post(url, formData, {headers}).then(parseRes)
 }
+
+
 
 export function register(openId , city, workYear) {
     const url = '/api/'
